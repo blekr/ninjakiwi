@@ -8,7 +8,8 @@ module.exports = {
   ],
   "globals": {
     "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
+    "SharedArrayBuffer": "readonly",
+    "chrome": "readonly"
   },
   "parserOptions": {
     "ecmaFeatures": {
@@ -26,6 +27,11 @@ module.exports = {
     "react/jsx-filename-extension": "off",
     "comma-dangle": ["error", "never"],
     "react/jsx-one-expression-per-line": "off",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "arrow-parens": "off",
+    "class-methods-use-this": "off",
+    "import/prefer-default-export":"off",
+    "implicit-arrow-linebreak": "off",
+    "function-paren-newline": "off",
   }
 };

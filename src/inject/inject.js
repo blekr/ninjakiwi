@@ -5,6 +5,7 @@ import { applyMiddleware, createStore } from 'redux';
 import { Provider, connect } from 'react-redux';
 import thunk from 'redux-thunk';
 import reducers from './reducers';
+import { keyboard } from './keyboard';
 
 const overlap = document.createElement('div');
 document.body.appendChild(overlap);
@@ -23,3 +24,4 @@ ReactDom.render(
   </Provider>,
   overlap
 );
+

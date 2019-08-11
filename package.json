@@ -42,6 +42,10 @@
     "*.js": [
       "eslint --fix",
       "git add"
+    ],
+    "*.{js,css,json,md}": [
+      "prettier --write",
+      "git add"
     ]
   },
   "husky": {
