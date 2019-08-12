@@ -6,9 +6,9 @@ module.exports = {
     ignored: /node_modules/
   },
   entry: {
-    background: './src/bg/background.js',
-    hotReload: './src/bg/hotReload.js',
-    content: './src/inject/inject.js'
+    background: ['babel-polyfill', './src/bg/background.js'],
+    content: ['babel-polyfill', './src/inject/inject.js'],
+    hotReload: './src/bg/hotReload.js'
   },
   output: {
     filename: '[name].js',
@@ -17,12 +17,26 @@ module.exports = {
   plugins: [
     new CopyPlugin([
       { from: 'manifest.json', to: '.' },
-      { from: 'src/options/index.html', to: './options.html'},
-      { from: 'assets', to: './assets'}
-    ]),
+      { from: 'src/options/index.html', to: './options.html' },
+      { from: 'assets', to: './assets' }
+    ])
   ],
   module: {
     rules: [
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true
+            }
+          },
+          {
+            loader: 'sass-loader'
+          }
+        ]
+      },
       {
         test: /\.m?js$/,
         exclude: /(node_modules|bower_components)/,

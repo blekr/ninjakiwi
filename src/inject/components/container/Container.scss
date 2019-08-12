@@ -1,0 +1,51 @@
+
+
+.root {
+  max-width: 1132px;
+  width: 100%;
+  height: 525px;
+  border: 1px solid red;
+  display: flex;
+
+  box-sizing: border-box;
+  div {
+    box-sizing: border-box;
+  }
+
+  .images {
+    width: 393px;
+    display: flex;
+    flex-direction: column;
+    .img {
+      height: 160px;
+    }
+    .imgFirst {
+      flex: 1 0 auto;
+    }
+  }
+
+  .right {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+
+    .inputContainer {
+      height: 43px;
+      display: flex;
+      input {
+        flex: 1 0 auto;
+      }
+      .logo {
+        width: 90px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+
+    .tabs {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}

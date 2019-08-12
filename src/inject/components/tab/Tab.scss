@@ -1,0 +1,37 @@
+
+.root {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  .img {
+    width: 32px;
+    height: 32px;
+  }
+  .right {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    .labelTitle {
+      display: flex;
+
+      .labels {
+        display: flex;
+
+        .label {
+          color: white;
+        }
+      }
+
+      .title {
+        font-size: 18px;
+        font-weight: bold;
+      }
+    }
+
+    .url {
+      color: #2266C6;
+    }
+  }
+}

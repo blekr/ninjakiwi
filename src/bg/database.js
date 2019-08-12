@@ -1,10 +1,7 @@
-
-
 class Database {
-  add() {
+  add() {}
 
-  }
-  search(key) {
+  search(text) {
     return [
       {
         id: 0,
@@ -16,7 +13,8 @@ class Database {
           {
             id: 0,
             text: '',
-            colorId: '',
+            color: ''
+            // colorId: '',
           }
         ],
         score: 0,
@@ -26,11 +24,11 @@ class Database {
             start: 0,
             end: 0,
             text: '',
-            labelId: 0,
+            labelId: 0
           }
         ]
       }
-    ]
+    ];
   }
 }
 

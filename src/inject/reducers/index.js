@@ -1,7 +1,6 @@
+import { combineReducers } from 'redux';
+import tabReducer from './tabReducer';
 
-export default (state = {}, {type, data} = {}) => {
-  switch (type) {
-    default:
-      return state;
-  }
-}
+export default combineReducers({
+  tab: tabReducer
+});
