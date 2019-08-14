@@ -4,7 +4,7 @@ import { insertCss } from '../../../tools';
 
 insertCss(style[0][1]);
 const styles = style.locals;
-export function Tab({ favicon, title, labels }) {
+export function Tab({ favicon, title, url, labels = [] }) {
   return (
     <div className={styles.root}>
       <img className={styles.img} alt="" src={favicon} />
@@ -19,7 +19,7 @@ export function Tab({ favicon, title, labels }) {
           </div>
           <div className={styles.title}>{title}</div>
         </div>
-        <div className={styles.url} />
+        <div className={styles.url}>{url}</div>
       </div>
     </div>
   );

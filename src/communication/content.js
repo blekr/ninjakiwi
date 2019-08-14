@@ -2,11 +2,11 @@ class ContentCommunication {
   constructor() {
     this.map = {};
     chrome.runtime.onMessage.addListener((...params) =>
-      this.listener(...params)
+      this.handleRequest(...params)
     );
   }
 
-  async listener(message, sender, sendResponse) {
+  async handleRequest(message, sender, sendResponse) {
     if (typeof message !== 'object') {
       return;
     }
@@ -26,6 +26,7 @@ class ContentCommunication {
       chrome.runtime.sendMessage(
         null,
         { type: '__CTB', endpoint, data },
+        {},
         resolve
       );
     });

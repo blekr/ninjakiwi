@@ -2,11 +2,11 @@ class BackgroundCommunication {
   constructor() {
     this.map = {};
     chrome.runtime.onMessage.addListener((...params) =>
-      this.listener(...params)
+      this.handleRequest(...params)
     );
   }
 
-  async listener(message, sender, sendResponse) {
+  async handleRequest(message, sender, sendResponse) {
     if (typeof message !== 'object') {
       return;
     }
@@ -26,6 +26,7 @@ class BackgroundCommunication {
       chrome.tabs.sendMessage(
         tabId,
         { type: '__BTC', endpoint, data },
+        {},
         resolve
       );
     });

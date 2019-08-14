@@ -6,7 +6,6 @@ import { insertCss } from '../../../tools';
 import { Tab } from '../tab/Tab';
 import { search } from '../../actions/search';
 
-console.log('---hi');
 insertCss(style[0][1]);
 const styles = style.locals;
 
@@ -31,7 +30,7 @@ function render({ text, tabs, setText }) {
         </div>
         <div className={styles.tabs}>
           {tabs.map(tab => (
-            <Tab {...tab} />
+            <Tab {...tab} key={tab.id} />
           ))}
         </div>
       </div>

@@ -7,6 +7,8 @@ import thunk from 'redux-thunk';
 import reducers from './reducers';
 import { keyboard } from './keyboard';
 import { Container } from './components/container/Container';
+import { contentCom } from '../communication/content';
+import { takePhoto } from './tools';
 
 function createOverlap() {
   const overlap = document.createElement('div');
@@ -40,7 +42,6 @@ ReactDom.render(
 let opened = false;
 keyboard.on('EV_FLIP', () => {
   if (!opened) {
-    console.log('----open');
     document.body.appendChild(overlap);
     opened = true;
   }
@@ -51,3 +52,14 @@ keyboard.on('EV_CLOSE', () => {
     opened = false;
   }
 });
+
+(async () => {
+  console.log('----inject 1')
+  const photo = await takePhoto();
+  console.log('----inject 2')
+  await contentCom.callBackground('UPDATE_PHOTO', {
+    url: window.location.href,
+    photo
+  });
+  console.log('----inject 3')
+})();
