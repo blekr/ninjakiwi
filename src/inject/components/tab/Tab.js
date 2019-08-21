@@ -4,9 +4,10 @@ import { insertCss } from '../../../tools';
 
 insertCss(style[0][1]);
 const styles = style.locals;
-export function Tab({ favicon, title, url, labels = [] }) {
+export function Tab({ favicon, title, url, labels = [], active }) {
+  const rootStyle = [styles.root, active ? styles.active : ''];
   return (
-    <div className={styles.root}>
+    <div className={rootStyle.join(' ')}>
       <img className={styles.img} alt="" src={favicon} />
       <div className={styles.right}>
         <div className={styles.labelTitle}>

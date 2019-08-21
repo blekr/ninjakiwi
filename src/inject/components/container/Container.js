@@ -9,18 +9,36 @@ import { search } from '../../actions/search';
 insertCss(style[0][1]);
 const styles = style.locals;
 
-function render({ text, tabs, setText }) {
+function render({ text, pages, setText }) {
   return (
     <div className={styles.root}>
       <div className={styles.images}>
-        {tabs[0] && (
-          <img className={styles.imgFirst} alt="" src={tabs[0].screenImg} />
+        {pages[0] && (
+          <div
+            className={styles.imgFirst}
+            style={{
+              backgroundImage: `url(${pages[0].screenImg ||
+                'https://developer.chrome.com/static/images/tabs.png'})`
+            }}
+          />
         )}
-        {tabs[1] && (
-          <img className={styles.img} alt="" src={tabs[1].screenImg} />
+        {pages[1] && (
+          <div
+            className={styles.img}
+            style={{
+              backgroundImage: `url(${pages[1].screenImg ||
+                'https://developer.chrome.com/static/images/tabs.png'})`
+            }}
+          />
         )}
-        {tabs[2] && (
-          <img className={styles.img} alt="" src={tabs[2].screenImg} />
+        {pages[2] && (
+          <div
+            className={styles.img}
+            style={{
+              backgroundImage: `url(${pages[2].screenImg ||
+                'https://developer.chrome.com/static/images/tabs.png'})`
+            }}
+          />
         )}
       </div>
       <div className={styles.right}>
@@ -29,8 +47,8 @@ function render({ text, tabs, setText }) {
           <div className={styles.logo}>Ubala</div>
         </div>
         <div className={styles.tabs}>
-          {tabs.map(tab => (
-            <Tab {...tab} key={tab.id} />
+          {pages.map((page, index) => (
+            <Tab {...page} key={page.id} active={index === 0} />
           ))}
         </div>
       </div>
@@ -40,8 +58,8 @@ function render({ text, tabs, setText }) {
 
 export const Container = compose(
   connect(
-    ({ tab: { tabs, tabIds } }) => ({
-      tabs: tabIds.map(tabId => tabs[tabId])
+    ({ page: { pages, pageIds } }) => ({
+      pages: pageIds.map(pageId => pages[pageId])
     }),
     dispatch => ({
       search(text) {

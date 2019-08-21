@@ -2,10 +2,11 @@ import { contentCom } from '../../communication/content';
 
 export function search(text) {
   return async dispatch => {
-    const tabs = await contentCom.callBackground('SEARCH', { text });
+    const pages = await contentCom.callBackground('SEARCH', { text });
+    console.log('----page', pages);
     dispatch({
-      type: 'SET_TABS',
-      data: { tabs }
+      type: 'SET_PAGES',
+      data: { pages }
     });
   };
 }

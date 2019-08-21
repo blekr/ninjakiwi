@@ -8,7 +8,8 @@ import reducers from './reducers';
 import { keyboard } from './keyboard';
 import { Container } from './components/container/Container';
 import { contentCom } from '../communication/content';
-import { takePhoto } from './tools';
+import { delay, takePhoto } from './tools';
+import { search } from './actions/search';
 
 function createOverlap() {
   const overlap = document.createElement('div');
@@ -42,6 +43,8 @@ ReactDom.render(
 let opened = false;
 keyboard.on('EV_FLIP', () => {
   if (!opened) {
+    console.log('-----flip');
+    store.dispatch(search(''));
     document.body.appendChild(overlap);
     opened = true;
   }
@@ -53,13 +56,20 @@ keyboard.on('EV_CLOSE', () => {
   }
 });
 
-(async () => {
-  console.log('----inject 1')
-  const photo = await takePhoto();
-  console.log('----inject 2')
-  await contentCom.callBackground('UPDATE_PHOTO', {
-    url: window.location.href,
-    photo
-  });
-  console.log('----inject 3')
-})();
+// (async () => {
+//   await delay(3000);
+//   console.log('----upload photo');
+//   try {
+//     const photo = await takePhoto();
+//     console.log('----upload photo', photo);
+//     await contentCom.callBackground('UPDATE_PHOTO', {
+//       url: window.location.href,
+//       photo
+//     });
+//   } catch (e) {
+//     console.log('----error', e);
+//   }
+//   console.log('-----upload photo finish')
+// })();
+
+// contentCom.handle('TAKE_PHOTO', takePhoto);

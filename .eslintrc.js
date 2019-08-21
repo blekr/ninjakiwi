@@ -28,6 +28,7 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'implicit-arrow-linebreak': 'off',
     'function-paren-newline': 'off',
-    'space-before-function-paren': 'off'
+    'space-before-function-paren': 'off',
+    'operator-linebreak': 'off'
   }
 };
