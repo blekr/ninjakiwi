@@ -10,6 +10,7 @@ import { Container } from './components/container/Container';
 import { contentCom } from '../communication/content';
 import { delay, takePhoto } from './tools';
 import { search } from './actions/search';
+import { commandMode, moveBackward, moveForward } from './actions/manipulate';
 
 function createOverlap() {
   const overlap = document.createElement('div');
@@ -55,6 +56,24 @@ keyboard.on('EV_CLOSE', () => {
     opened = false;
   }
 });
+keyboard.on('EV_FORWARD', () => {
+  if (!opened) {
+    return;
+  }
+  store.dispatch(moveForward());
+})
+keyboard.on('EV_BACKWARD', () => {
+  if (!opened) {
+    return;
+  }
+  store.dispatch(moveBackward());
+})
+keyboard.on('EV_COMMAND_MODE', () => {
+  if (!opened) {
+    return;
+  }
+  store.dispatch(commandMode());
+})
 
 // (async () => {
 //   await delay(3000);

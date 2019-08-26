@@ -13,6 +13,7 @@ class Keyboard extends EventEmitter {
         this.emit('EV_FLIP');
       }
       if (e.code === 'Escape') {
+        this.emit('EV_COMMAND_MODE')
         if (!this.closing || new Date().getTime() - this.closingTIme > 600) {
           this.closing = true;
           this.closingTIme = new Date().getTime();
@@ -20,6 +21,12 @@ class Keyboard extends EventEmitter {
           this.closing = false;
           this.emit('EV_CLOSE');
         }
+      }
+      if (e.code === 'ArrowDown' || e.code === 'KeyJ') {
+        this.emit('EV_FORWARD');
+      }
+      if (e.code === 'ArrowUp' || e.code === 'KeyK') {
+        this.emit('EV_BACKWARD');
       }
     });
   }

@@ -22,7 +22,7 @@
   "permissions": ["bookmarks", "history", "tabs", "activeTab", "<all_urls>"],
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*"],
+      "matches": ["http://*/*", "https://*/*", "file:///private/tmp/a.html"],
       "js": ["content.js"]
     }
   ],

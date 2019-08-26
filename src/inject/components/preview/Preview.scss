@@ -1,0 +1,38 @@
+
+.root {
+  width: 391px;
+  height: 523px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .images {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s ease;
+
+    .img {
+      height: 154px;
+      flex: none;
+
+      border: 2px solid white;;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center top;
+
+      &.big {
+        height: 203px;
+      }
+
+      &.paddingBottom {
+        margin-bottom: 6px;
+      }
+
+      &.active {
+        border: 2px solid #CBBF4A;
+      }
+    }
+  }
+}
