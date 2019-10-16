@@ -1,4 +1,5 @@
 import md5 from 'md5';
+import filter from 'lodash/filter';
 
 export async function getAllTabs() {
   return new Promise(resolve => {
@@ -25,11 +26,36 @@ export async function getAllWindows() {
 export async function getScreenshot(windowId) {
   return new Promise(resolve => {
     try {
-      chrome.tabs.captureVisibleTab(windowId, resolve);
+      chrome.tabs.captureVisibleTab(windowId, {}, resolve);
     } catch (e) {
       resolve();
     }
   });
+}
+
+export function isSensitive(url) {
+  return url.indexOf('chrome://') === 0;
+}
+
+export function normalize(str) {
+  // Create regex using 'new RegExp()' instead of the literal /.../u,
+  // because the later one will be transformed into wrong ES5 by babel
+  console.log(
+    '-----haha',
+    str,
+    filter(
+      str.split(new RegExp('[^\\p{Alphabetic}\\p{Number}]+', 'u')),
+      item => item && item.length < 50
+    ).join(' ')
+  );
+  return filter(
+    str.split(new RegExp('[^\\p{Alphabetic}\\p{Number}]+', 'u')),
+    item => item && item.length < 50
+  ).join(' ');
+}
+
+export function faviconUrl(url) {
+  return `chrome://favicon/size/32@2x/${url}`
 }
 
 export const defaultFavicon =

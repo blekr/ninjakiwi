@@ -1,23 +1,27 @@
 import filter from 'lodash/filter';
 import get from 'lodash/fp/get';
+import size from 'lodash/size';
 import { backgroundCom } from '../communication/background';
 import { database } from './database';
 import {
-  defaultFavicon,
+  defaultFavicon, faviconUrl,
   getAllTabs,
   getAllWindows,
   getScreenshot,
   getTabById,
-  urlToId
+  isSensitive,
+  urlToId,
 } from './tools';
 
-backgroundCom.handle('SEARCH', text => database.search(text));
+backgroundCom.handle('SEARCH', ({ text }) => database.search(text));
 backgroundCom.handle('UPDATE_PHOTO', ({ url, photo }) => {
-  console.log('----', url, photo);
   database.updatePhoto(urlToId(url), photo);
 });
 
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener(async (tabId, { status }, tab) => {
+  if (isSensitive(tab.url) || status !== 'complete') {
+    return;
+  }
   const png = await getScreenshot(tab.windowId);
   database.addPage({
     id: urlToId(tab.url),
@@ -29,16 +33,17 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 });
 
 chrome.tabs.onActivated.addListener(async ({ tabId, windowId }) => {
-  console.log('-----on activated', tabId, windowId);
   const tab = await getTabById(tabId);
+  if (isSensitive(tab.url)) {
+    return;
+  }
   const png = await getScreenshot(windowId);
-  console.log('-----on activated', tab.url, png);
   database.updatePhoto(urlToId(tab.url), png);
 });
 
 async function loadAllTabs() {
   const allTabs = await getAllTabs();
-  console.log('------hi', allTabs);
+  console.log('----get tabs: ', allTabs.length);
   allTabs.forEach(({ url, favIconUrl, title }) => {
     database.addPage({
       id: urlToId(url),
@@ -49,25 +54,60 @@ async function loadAllTabs() {
   });
 }
 
-async function loadAllScreenshot() {
-  const windows = await getAllWindows();
-  const promises = windows.map(async ({ id, tabs }) => {
-    const png = await getScreenshot(id);
-    const tab = filter(tabs, get('active'))[0];
-    return {
-      id: urlToId(tab.url),
-      png
-    };
-  });
-  const results = await Promise.all(promises);
-  results.forEach(({ id, png }) => {
-    database.updatePhoto(id, png);
+function loadAllBookmarks() {
+  function saveNodes(nodes) {
+    console.log('-----get bookmark: ', nodes.length);
+    nodes.forEach(node => {
+      if (node.url) {
+        database.addPage({
+          id: urlToId(node.url),
+          url: node.url,
+          favicon: faviconUrl(node.url),
+          title: node.title
+        });
+      }
+      if (size(node.children)) {
+        saveNodes(node.children);
+      }
+    });
+  }
+  chrome.bookmarks.getTree(saveNodes);
+}
+
+function loadAllHistory() {
+  chrome.history.search({ text: '', maxResults: 10000 }, items => {
+    items.forEach(item => {
+      database.addPage({
+        id: urlToId(item.url),
+        url: item.url,
+        favicon: faviconUrl(item.url),
+        title: item.title
+      });
+    });
   });
 }
 
+// async function loadAllScreenshot() {
+//   const windows = await getAllWindows();
+//   const promises = windows.map(async ({ id, tabs }) => {
+//     const png = await getScreenshot(id);
+//     const tab = filter(tabs, get('active'))[0];
+//     return {
+//       id: urlToId(tab.url),
+//       png
+//     };
+//   });
+//   const results = await Promise.all(promises);
+//   results.forEach(({ id, png }) => {
+//     database.updatePhoto(id, png);
+//   });
+// }
+
 async function run() {
   await loadAllTabs();
-  await loadAllScreenshot();
+  // await loadAllScreenshot();
+  loadAllBookmarks();
+  loadAllHistory();
 }
 
 run().catch();

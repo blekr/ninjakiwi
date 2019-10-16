@@ -26,33 +26,39 @@ function createOverlap() {
   return overlap;
 }
 
-const store = createStore(reducers, applyMiddleware(thunk));
-let overlap = createOverlap();
+// const store = createStore(reducers, applyMiddleware(thunk));
+// let overlap = createOverlap();
 
 // function render({ name }) {
 //   return <div>hello I am ${name}</div>;
 // }
 // const Abc = compose(connect(() => ({ name: 'tom' })))(render);
 
-ReactDom.render(
-  <Provider store={store}>
-    <Container />
-  </Provider>,
-  overlap
-);
-
 let opened = false;
+let store;
+let overlap;
 keyboard.on('EV_FLIP', () => {
   if (!opened) {
-    console.log('-----flip');
+    store = createStore(reducers, applyMiddleware(thunk));
     store.dispatch(search(''));
+    overlap = createOverlap();
     document.body.appendChild(overlap);
+    ReactDom.render(
+      <Provider store={store}>
+        <Container />
+      </Provider>,
+      overlap
+    );
     opened = true;
+  } else {
+    store.dispatch(moveForward());
   }
 });
 keyboard.on('EV_CLOSE', () => {
   if (opened) {
-    overlap = document.body.removeChild(overlap);
+    overlap.remove();
+    overlap = null;
+    store = null;
     opened = false;
   }
 });

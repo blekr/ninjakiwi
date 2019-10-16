@@ -19,7 +19,7 @@
     "default_title": "browser action demo",
     "default_popup": "src/browser_action/browser_action.html"
   },
-  "permissions": ["bookmarks", "history", "tabs", "activeTab", "<all_urls>"],
+  "permissions": ["bookmarks", "history", "tabs", "activeTab", "<all_urls>", "sessions"],
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "file:///private/tmp/a.html"],

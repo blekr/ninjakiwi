@@ -33,6 +33,7 @@
     "eslint": "^6.1.0",
     "eslint-plugin-prettier": "^3.1.0",
     "event-emitter": "^0.3.5",
+    "flexsearch": "^0.6.30",
     "html2canvas": "^1.0.0-rc.3",
     "lodash": "^4.17.15",
     "md5": "^2.2.1",

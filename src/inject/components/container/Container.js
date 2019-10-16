@@ -1,6 +1,6 @@
 import React from 'react';
 import get from 'lodash/fp/get';
-import { compose, lifecycle, withState } from 'recompose';
+import { compose, lifecycle, withHandlers, withProps, withState } from 'recompose';
 import { connect } from 'react-redux';
 import style from './Container.scss';
 import { insertCss } from '../../../tools';
@@ -11,13 +11,17 @@ import { Preview } from '../preview/Preview';
 insertCss(style[0][1]);
 const styles = style.locals;
 
-function render({ text, pages, setText, manipulate: { index } }) {
+function render({ text, pages, setText, manipulate: { index }, inputRef }) {
   return (
     <div className={styles.root}>
       <Preview pages={pages} index={index} />
       <div className={styles.right}>
         <div className={styles.inputContainer}>
-          <input value={text} onChange={e => setText(e.target.value)} />
+          <input
+            value={text}
+            onChange={e => setText(e.target.value)}
+            ref={inputRef}
+          />
           <div className={styles.logo}>Ubala</div>
         </div>
         <div className={styles.tabs}>
@@ -43,9 +47,14 @@ export const Container = compose(
     })
   ),
   withState('text', 'setText', ''),
+  withProps({
+    inputRef: React.createRef()
+  }),
   lifecycle({
     componentDidMount() {
       this.props.search();
+      console.log('--------ref', this.props.inputRef)
+      this.props.inputRef.current.focus();
     }
   })
 )(render);

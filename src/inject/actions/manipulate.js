@@ -2,10 +2,7 @@ export function moveForward() {
   return (dispatch, getStore) => {
     const store = getStore();
     const total = store.page.pageIds.length;
-    const { index, mode } = store.manipulate;
-    if (mode !== 'COMMAND') {
-      return;
-    }
+    const { index } = store.manipulate;
     dispatch({
       type: 'SET_INDEX',
       data: {
@@ -18,10 +15,7 @@ export function moveForward() {
 export function moveBackward() {
   return (dispatch, getStore) => {
     const store = getStore();
-    const { index, mode } = store.manipulate;
-    if (mode !== 'COMMAND') {
-      return;
-    }
+    const { index } = store.manipulate;
     dispatch({
       type: 'SET_INDEX',
       data: {
