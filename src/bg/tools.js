@@ -55,7 +55,15 @@ export function normalize(str) {
 }
 
 export function faviconUrl(url) {
-  return `chrome://favicon/size/32@2x/${url}`
+  return `chrome://favicon/${url}`;
+}
+
+export function blobToDataURL(blob) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.readAsDataURL(blob);
+  });
 }
 
 export const defaultFavicon =

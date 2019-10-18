@@ -33,8 +33,13 @@ class Database {
 
   addPage(page) {
     const title = normalize(page.title);
-    // double calls to decode deeply encoded url embed in page.url
-    const url = normalize(decodeURIComponent(decodeURIComponent(page.url)));
+    let url;
+    try {
+      // double calls to decode deeply encoded url embed in page.url
+      url = normalize(decodeURIComponent(decodeURIComponent(page.url)));
+    } catch (e) {
+      url = normalize(page.url);
+    }
     if (!title || !url) {
       return;
     }

@@ -4,6 +4,7 @@ import size from 'lodash/size';
 import { backgroundCom } from '../communication/background';
 import { database } from './database';
 import {
+  blobToDataURL,
   defaultFavicon, faviconUrl,
   getAllTabs,
   getAllWindows,
@@ -17,6 +18,12 @@ backgroundCom.handle('SEARCH', ({ text }) => database.search(text));
 backgroundCom.handle('UPDATE_PHOTO', ({ url, photo }) => {
   database.updatePhoto(urlToId(url), photo);
 });
+backgroundCom.handle('GET_FAVICON', async ({ url }) => {
+  console.log('------get favicon: ', url)
+  const response = await fetch(url)
+  const blob = await response.blob();
+  return blobToDataURL(blob);
+})
 
 chrome.tabs.onUpdated.addListener(async (tabId, { status }, tab) => {
   if (isSensitive(tab.url) || status !== 'complete') {

@@ -8,6 +8,7 @@ module.exports = {
   entry: {
     background: ['babel-polyfill', './src/bg/background.js'],
     content: ['babel-polyfill', './src/inject/inject.js'],
+    dialog: ['babel-polyfill', './src/dialog/dialog.js'],
     hotReload: './src/bg/hotReload.js'
   },
   output: {
@@ -18,7 +19,8 @@ module.exports = {
     new CopyPlugin([
       { from: 'manifest.json', to: '.' },
       { from: 'src/options/index.html', to: './options.html' },
-      { from: 'assets', to: './assets' }
+      { from: 'assets', to: './assets' },
+      { from: 'src/dialog/dialog.html', to: './dialog.html' }
     ])
   ],
   module: {

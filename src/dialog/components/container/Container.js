@@ -42,11 +42,8 @@ function render({ text, pages, setText, manipulate: { index }, inputRef }) {
 
 export const Container = compose(
   connect(
-    ({ page: { pages, pageIds }, manipulate, favicon }) => ({
-      pages: pageIds.map(pageId => ({
-        ...pages[pageId],
-        favicon: favicon[pageId]
-      })),
+    ({ page: { pages, pageIds }, manipulate }) => ({
+      pages: pageIds.map(pageId => pages[pageId]),
       manipulate
     }),
     dispatch => ({
