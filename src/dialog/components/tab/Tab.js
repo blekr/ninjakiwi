@@ -1,11 +1,9 @@
 import React from 'react';
-import style from './Tab.scss';
-import { insertCss } from '../../../tools';
+import compact from 'lodash/compact';
+import styles from './Tab.scss';
 
-insertCss(style[0][1]);
-const styles = style.locals;
-export function Tab({ favicon, title, url, labels = [], active }) {
-  const rootStyle = [styles.root, active ? styles.active : ''];
+export function Tab({ favicon, title, url, labels = [], active, cls }) {
+  const rootStyle = compact([styles.root, active ? styles.active : '', cls]);
   return (
     <div className={rootStyle.join(' ')}>
       <img className={styles.img} alt="" src={favicon} />

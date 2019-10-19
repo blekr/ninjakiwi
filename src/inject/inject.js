@@ -5,7 +5,8 @@
 // import { Provider, connect } from 'react-redux';
 // import thunk from 'redux-thunk';
 // import reducers from './reducers';
-import { keyboard } from './keyboard';
+import { keyboard } from '../tools/keyboard';
+import { contentCom } from '../communication/content';
 // import { Container } from './components/container/Container';
 // import { contentCom } from '../communication/content';
 // import { delay, takePhoto } from './tools';
@@ -17,55 +18,26 @@ function createOverlap() {
   overlap.style.position = 'fixed';
   overlap.style.left = '0';
   overlap.style.top = '0';
-  // overlap.style.right = '0';
-  // overlap.style.bottom = '0';
   overlap.style.width = '100%';
   overlap.style.height = '100%';
   overlap.style.zIndex = '100000000';
-  overlap.setAttribute('src', chrome.extension.getURL('dialog.html'))
-  // overlap.style.display = 'flex';
-  // overlap.style.justifyContent = 'center';
-  // overlap.style.alignItems = 'center';
-  // const iframe = document.createElement('iframe')
-  // iframe.setAttribute('src', chrome.extension.getURL('dialog.html'))
-  // iframe.style.width = '100%';
-  // iframe.style.maxWidth = '1144px';
-  // overlap.append(iframe);
+  overlap.setAttribute('src', chrome.extension.getURL('dialog.html'));
   return overlap;
 }
 
-// const store = createStore(reducers, applyMiddleware(thunk));
-// let overlap = createOverlap();
-
-// function render({ name }) {
-//   return <div>hello I am ${name}</div>;
-// }
-// const Abc = compose(connect(() => ({ name: 'tom' })))(render);
-
 let opened = false;
-// let store;
 let overlap;
+
 keyboard.on('EV_FLIP', () => {
   if (!opened) {
-    console.log('-------show dialog')
-    // store = createStore(reducers, applyMiddleware(thunk));
-    // store.dispatch(search(''));
     overlap = createOverlap();
     document.body.appendChild(overlap);
-    // ReactDom.render(
-    //   <Provider store={store}>
-    //     <Container />
-    //   </Provider>,
-    //   overlap
-    // );
     opened = true;
-  } else {
-    // store.dispatch(moveForward());
   }
 });
-keyboard.on('EV_CLOSE', () => {
+contentCom.handle('CLOSE_DIALOG', () => {
   if (opened) {
-    console.log('-----close ...')
+    console.log('-----close ...');
     overlap.remove();
     overlap = null;
     // store = null;

@@ -1,5 +1,6 @@
 import React from 'react';
 import get from 'lodash/fp/get';
+import size from 'lodash/size';
 import {
   compose,
   lifecycle,
@@ -8,33 +9,31 @@ import {
   withState
 } from 'recompose';
 import { connect } from 'react-redux';
-import style from './Container.scss';
-import { insertCss } from '../../../tools';
+import styles from './Container.scss';
 import { Tab } from '../tab/Tab';
 import { search } from '../../actions/search';
 import { Preview } from '../preview/Preview';
 
-insertCss(style[0][1]);
-const styles = style.locals;
-
 function render({ text, pages, setText, manipulate: { index }, inputRef }) {
   return (
     <div className={styles.root}>
-      <Preview pages={pages} index={index} />
-      <div className={styles.right}>
-        <div className={styles.inputContainer}>
-          <input
-            value={text}
-            onChange={e => setText(e.target.value)}
-            ref={inputRef}
+      <div className={styles.inputContainer}>
+        <input
+          value={text}
+          onChange={e => setText(e.target.value)}
+          ref={inputRef}
+        />
+        <div className={styles.logo}>Ubala</div>
+      </div>
+      <div className={styles.tabs}>
+        {pages.map((page, imgIndex) => (
+          <Tab
+            {...page}
+            key={page.id}
+            active={imgIndex === index}
+            cls={imgIndex !== size(pages) - 1 && styles.tab}
           />
-          <div className={styles.logo}>Ubala</div>
-        </div>
-        <div className={styles.tabs}>
-          {pages.map((page, imgIndex) => (
-            <Tab {...page} key={page.id} active={imgIndex === index} />
-          ))}
-        </div>
+        ))}
       </div>
     </div>
   );

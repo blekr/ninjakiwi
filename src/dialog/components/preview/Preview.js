@@ -1,9 +1,5 @@
 import React from 'react';
-import style from './Preview.scss';
-import { insertCss } from '../../../tools';
-
-insertCss(style[0][1]);
-const styles = style.locals;
+import styles from './Preview.scss';
 
 const WIN_SIZE = 3;
 

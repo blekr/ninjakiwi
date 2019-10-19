@@ -29,6 +29,7 @@ module.exports = {
     'implicit-arrow-linebreak': 'off',
     'function-paren-newline': 'off',
     'space-before-function-paren': 'off',
-    'operator-linebreak': 'off'
+    'operator-linebreak': 'off',
+    'object-curly-newline': 'off'
   }
 };

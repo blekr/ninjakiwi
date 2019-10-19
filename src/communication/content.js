@@ -1,3 +1,6 @@
+import isNil from 'lodash/isNil';
+import { getCurrentTab } from '../dialog/tools';
+
 class ContentCommunication {
   constructor() {
     this.map = {};
@@ -11,7 +14,7 @@ class ContentCommunication {
       return;
     }
     const { type, endpoint, data } = message;
-    if (type !== '__BTC') {
+    if (type !== '__BTC' && type !== '__CTC') {
       return;
     }
     if (!this.map[endpoint]) {
@@ -26,6 +29,18 @@ class ContentCommunication {
       chrome.runtime.sendMessage(
         null,
         { type: '__CTB', endpoint, data },
+        {},
+        resolve
+      );
+    });
+  }
+
+  async callContent(tabId, endpoint, data) {
+    const currentTab = await getCurrentTab();
+    return new Promise(resolve => {
+      chrome.tabs.sendMessage(
+        isNil(tabId) ? currentTab.id : tabId,
+        { type: '__CTC', endpoint, data },
         {},
         resolve
       );
