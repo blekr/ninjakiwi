@@ -21,6 +21,7 @@ function createOverlap() {
   overlap.style.width = '100%';
   overlap.style.height = '100%';
   overlap.style.zIndex = '100000000';
+  overlap.style.border = 'none';
   overlap.setAttribute('src', chrome.extension.getURL('dialog.html'));
   return overlap;
 }

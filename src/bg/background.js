@@ -26,7 +26,7 @@ backgroundCom.handle('GET_FAVICON', async ({ url }) => {
 })
 
 chrome.tabs.onUpdated.addListener(async (tabId, { status }, tab) => {
-  if (isSensitive(tab.url) || status !== 'complete') {
+  if (!tab.url || isSensitive(tab.url) || status !== 'complete') {
     return;
   }
   const png = await getScreenshot(tab.windowId);
@@ -41,7 +41,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, { status }, tab) => {
 
 chrome.tabs.onActivated.addListener(async ({ tabId, windowId }) => {
   const tab = await getTabById(tabId);
-  if (isSensitive(tab.url)) {
+  if (!tab.url || isSensitive(tab.url)) {
     return;
   }
   const png = await getScreenshot(windowId);
