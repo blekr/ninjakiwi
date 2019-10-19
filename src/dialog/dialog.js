@@ -9,13 +9,14 @@ import { Container } from './components/container/Container';
 import { keyboard } from '../tools/keyboard';
 import { moveBackward, moveForward } from './actions/manipulate';
 import { contentCom } from '../communication/content';
+import { Main } from './components/main/Main';
 
 const store = createStore(reducers, applyMiddleware(thunk));
 store.dispatch(search(''));
 
 ReactDom.render(
   <Provider store={store}>
-    <Container />
+    <Main />
   </Provider>,
   document.getElementById('root')
 );

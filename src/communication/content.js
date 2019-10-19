@@ -35,6 +35,7 @@ class ContentCommunication {
     });
   }
 
+  // when no tabId specified, the current tab is used
   async callContent(tabId, endpoint, data) {
     const currentTab = await getCurrentTab();
     return new Promise(resolve => {
