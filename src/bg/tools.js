@@ -1,4 +1,5 @@
 import md5 from 'md5';
+import get from 'lodash/get';
 import filter from 'lodash/filter';
 
 export async function getAllTabs() {
@@ -10,6 +11,16 @@ export async function getAllTabs() {
 export async function getTabById(tabId) {
   return new Promise(resolve => {
     chrome.tabs.get(tabId, resolve);
+  });
+}
+
+export async function getTabByUrl(url) {
+  return new Promise(resolve => {
+    chrome.tabs.query({ url: url.replace(/#.*/, '') }, tabs => {
+      const filtered = filter(tabs, tab => tab.url === url);
+      resolve(get(filtered, 0));
+    });
+    chrome.tabs.query({ url }, tabs => resolve(get(tabs, 0)));
   });
 }
 

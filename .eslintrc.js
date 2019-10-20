@@ -30,6 +30,9 @@ module.exports = {
     'function-paren-newline': 'off',
     'space-before-function-paren': 'off',
     'operator-linebreak': 'off',
-    'object-curly-newline': 'off'
+    'object-curly-newline': 'off',
+    'jsx-a11y/click-events-have-key-events': 'off',
+    'jsx-a11y/no-static-element-interactions': 'off',
+    'no-shadow': 'off'
   }
 };

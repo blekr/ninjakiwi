@@ -25,6 +25,15 @@ export function moveBackward() {
   };
 }
 
+export function setIndex(index) {
+  return {
+    type: 'SET_INDEX',
+    data: {
+      index
+    }
+  };
+}
+
 export function commandMode() {
   return {
     type: 'SET_MODE',

@@ -6,7 +6,6 @@ import styles from './Main.scss';
 import { Container } from '../container/Container';
 
 function render({ bgImg }) {
-  console.log('----bgImg', bgImg);
   return (
     <div className={styles.root}>
       {bgImg && (

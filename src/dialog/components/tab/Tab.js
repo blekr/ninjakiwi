@@ -2,10 +2,23 @@ import React from 'react';
 import compact from 'lodash/compact';
 import styles from './Tab.scss';
 
-export function Tab({ favicon, title, url, labels = [], active, cls }) {
+export function Tab({
+  favicon,
+  title,
+  url,
+  labels = [],
+  active,
+  cls,
+  onEnter,
+  onSelect
+}) {
   const rootStyle = compact([styles.root, active ? styles.active : '', cls]);
   return (
-    <div className={rootStyle.join(' ')}>
+    <div
+      className={rootStyle.join(' ')}
+      onMouseEnter={onEnter}
+      onClick={onSelect}
+    >
       <img className={styles.img} alt="" src={favicon} />
       <div className={styles.right}>
         <div className={styles.labelTitle}>

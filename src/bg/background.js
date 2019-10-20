@@ -5,25 +5,27 @@ import { backgroundCom } from '../communication/background';
 import { database } from './database';
 import {
   blobToDataURL,
-  defaultFavicon, faviconUrl,
+  defaultFavicon,
+  faviconUrl,
   getAllTabs,
   getAllWindows,
   getScreenshot,
   getTabById,
+  getTabByUrl,
   isSensitive,
-  urlToId,
+  urlToId
 } from './tools';
 
 backgroundCom.handle('SEARCH', ({ text }) => database.search(text));
-backgroundCom.handle('UPDATE_PHOTO', ({ url, photo }) => {
-  database.updatePhoto(urlToId(url), photo);
+backgroundCom.handle('OPEN_URL', async ({ url }) => {
+  const tab = await getTabByUrl(url);
+  if (tab) {
+    chrome.tabs.update(tab.id, { highlighted: true });
+    chrome.windows.update(tab.windowId, { focused: true });
+  } else {
+    chrome.tabs.create({ url, active: true });
+  }
 });
-backgroundCom.handle('GET_FAVICON', async ({ url }) => {
-  console.log('------get favicon: ', url)
-  const response = await fetch(url)
-  const blob = await response.blob();
-  return blobToDataURL(blob);
-})
 
 chrome.tabs.onUpdated.addListener(async (tabId, { status }, tab) => {
   if (!tab.url || isSensitive(tab.url) || status !== 'complete') {
