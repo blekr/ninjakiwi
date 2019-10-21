@@ -1,11 +1,12 @@
 import React from 'react';
 import get from 'lodash/get';
-import { compose, withState } from 'recompose';
+import { compose, withHandlers, withProps, withState } from 'recompose';
 import { connect } from 'react-redux';
 import styles from './Main.scss';
 import { Container } from '../container/Container';
+import { contentCom } from '../../../communication/content';
 
-function render({ bgImg }) {
+function render({ bgImg, closerRef, onClick }) {
   return (
     <div className={styles.root}>
       {bgImg && (
@@ -17,7 +18,7 @@ function render({ bgImg }) {
           <div className={styles.mask} />
         </div>
       )}
-      <div className={styles.layerContent}>
+      <div className={styles.layerContent} ref={closerRef} onClick={onClick}>
         <Container />
       </div>
     </div>
@@ -27,5 +28,15 @@ function render({ bgImg }) {
 export const Main = compose(
   connect(({ manipulate: { index }, page: { pages, pageIds } }) => ({
     bgImg: get(get(pages, get(pageIds, index)), 'screenImg')
-  }))
+  })),
+  withProps({
+    closerRef: React.createRef()
+  }),
+  withHandlers({
+    onClick: ({ closerRef }) => e => {
+      if (e.target === closerRef.current) {
+        contentCom.callContent(null, 'CLOSE_DIALOG');
+      }
+    }
+  })
 )(render);

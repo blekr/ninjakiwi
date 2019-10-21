@@ -4,19 +4,14 @@
   max-width: 868px;
   width: 100%;
   min-height: 484px;
-  border: 1px solid white;
   display: flex;
   flex-direction: column;
-  padding: 7px 7px 0 7px;
-
-  box-sizing: border-box;
-  div {
-    box-sizing: border-box;
-  }
 
   .bg {
     display: flex;
     flex-direction: column;
+    border: 1px solid white;
+    padding: 7px 7px 0 7px;
 
     .inputContainer {
       height: 43px;
