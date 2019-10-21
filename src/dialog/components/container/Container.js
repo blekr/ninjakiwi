@@ -1,4 +1,5 @@
 import React from 'react';
+import debounce from 'lodash/debounce';
 import get from 'lodash/get';
 import size from 'lodash/size';
 import {
@@ -19,7 +20,7 @@ import { backgroundCom } from '../../../communication/background';
 function render({
   text,
   pages,
-  setText,
+  onChangeText,
   manipulate: { index },
   inputRef,
   setIndex,
@@ -27,33 +28,35 @@ function render({
   openUrl
 }) {
   return (
-    <div
-      className={styles.root}
-      style={{
-        backgroundColor: hasBgImg
-          ? 'rgba(25, 25, 25, 0.75)'
-          : 'rgba(25, 25, 25, 1)'
-      }}
-    >
-      <div className={styles.inputContainer}>
-        <input
-          value={text}
-          onChange={e => setText(e.target.value)}
-          ref={inputRef}
-        />
-        <div className={styles.logo}>Ubala</div>
-      </div>
-      <div className={styles.tabs}>
-        {pages.map((page, imgIndex) => (
-          <Tab
-            {...page}
-            key={page.id}
-            active={imgIndex === index}
-            cls={imgIndex !== size(pages) - 1 && styles.tab}
-            onEnter={() => setIndex(imgIndex)}
-            onSelect={() => openUrl(page.url)}
+    <div className={styles.root}>
+      <div
+        className={styles.bg}
+        style={{
+          backgroundColor: hasBgImg
+            ? 'rgba(25, 25, 25, 0.75)'
+            : 'rgba(25, 25, 25, 1)'
+        }}
+      >
+        <div className={styles.inputContainer}>
+          <input
+            value={text}
+            onChange={e => onChangeText(e.target.value)}
+            ref={inputRef}
           />
-        ))}
+          <div className={styles.logo}>Ubala</div>
+        </div>
+        <div className={styles.tabs}>
+          {pages.map((page, imgIndex) => (
+            <Tab
+              {...page}
+              key={page.id}
+              active={imgIndex === index}
+              cls={imgIndex !== size(pages) - 1 && styles.tab}
+              onEnter={() => setIndex(imgIndex)}
+              onSelect={() => openUrl(page.url)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -79,11 +82,18 @@ export const Container = compose(
   withProps({
     inputRef: React.createRef()
   }),
-  withHandlers({
-    openUrl: () => url => {
-      contentCom.callBackground('OPEN_URL', { url });
-      contentCom.callContent(null, 'CLOSE_DIALOG');
-    },
+  withHandlers(({ search }) => {
+    const debounceSearch = debounce(text => search(text), 10);
+    return {
+      openUrl: () => url => {
+        contentCom.callBackground('OPEN_URL', { url });
+        contentCom.callContent(null, 'CLOSE_DIALOG');
+      },
+      onChangeText: ({ setText }) => text => {
+        setText(text);
+        debounceSearch(text);
+      }
+    };
   }),
   lifecycle({
     componentDidMount() {

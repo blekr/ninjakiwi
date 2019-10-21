@@ -13,7 +13,6 @@ import { contentCom } from '../communication/content';
 import { Main } from './components/main/Main';
 
 const store = createStore(reducers, applyMiddleware(thunk));
-store.dispatch(search(''));
 
 ReactDom.render(
   <Provider store={store}>

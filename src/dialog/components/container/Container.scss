@@ -3,7 +3,7 @@
 .root {
   max-width: 868px;
   width: 100%;
-  //height: 542px;
+  min-height: 484px;
   border: 1px solid white;
   display: flex;
   flex-direction: column;
@@ -14,34 +14,41 @@
     box-sizing: border-box;
   }
 
-  .inputContainer {
-    height: 43px;
-    display: flex;
-    input {
-      flex: 1 0 auto;
-      border: none;
-      outline: none;
-      background-color: transparent;
-      color: white;
-      font-size: 18px;
-      padding: 0 10px;
-    }
-    .logo {
-      width: 90px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #8B8B8B;
-      font-weight: bold;
-    }
-  }
-
-  .tabs {
+  .bg {
     display: flex;
     flex-direction: column;
 
-    .tab {
-      border-bottom: 1px solid #979797;
+    .inputContainer {
+      height: 43px;
+      display: flex;
+
+      input {
+        flex: 1 0 auto;
+        border: none;
+        outline: none;
+        background-color: transparent;
+        color: white;
+        font-size: 18px;
+        padding: 0 10px;
+      }
+
+      .logo {
+        width: 90px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #8B8B8B;
+        font-weight: bold;
+      }
+    }
+
+    .tabs {
+      display: flex;
+      flex-direction: column;
+
+      .tab {
+        border-bottom: 1px solid #979797;
+      }
     }
   }
 }
