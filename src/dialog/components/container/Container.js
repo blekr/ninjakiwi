@@ -82,6 +82,7 @@ export const Container = compose(
   withHandlers({
     openUrl: () => url => {
       contentCom.callBackground('OPEN_URL', { url });
+      contentCom.callContent(null, 'CLOSE_DIALOG');
     },
   }),
   lifecycle({

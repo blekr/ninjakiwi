@@ -20,7 +20,7 @@ backgroundCom.handle('SEARCH', ({ text }) => database.search(text));
 backgroundCom.handle('OPEN_URL', async ({ url }) => {
   const tab = await getTabByUrl(url);
   if (tab) {
-    chrome.tabs.update(tab.id, { highlighted: true });
+    chrome.tabs.update(tab.id, { active: true });
     chrome.windows.update(tab.windowId, { focused: true });
   } else {
     chrome.tabs.create({ url, active: true });
@@ -28,6 +28,7 @@ backgroundCom.handle('OPEN_URL', async ({ url }) => {
 });
 
 chrome.tabs.onUpdated.addListener(async (tabId, { status }, tab) => {
+  console.log('on updated: ', tab.url)
   if (!tab.url || isSensitive(tab.url) || status !== 'complete') {
     return;
   }
@@ -43,6 +44,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, { status }, tab) => {
 
 chrome.tabs.onActivated.addListener(async ({ tabId, windowId }) => {
   const tab = await getTabById(tabId);
+  console.log('on activated: ', tab.url)
   if (!tab.url || isSensitive(tab.url)) {
     return;
   }
@@ -52,7 +54,6 @@ chrome.tabs.onActivated.addListener(async ({ tabId, windowId }) => {
 
 async function loadAllTabs() {
   const allTabs = await getAllTabs();
-  console.log('----get tabs: ', allTabs.length);
   allTabs.forEach(({ url, favIconUrl, title }) => {
     database.addPage({
       id: urlToId(url),
