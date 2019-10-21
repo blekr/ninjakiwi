@@ -66,7 +66,6 @@ async function loadAllTabs() {
 
 function loadAllBookmarks() {
   function saveNodes(nodes) {
-    console.log('-----get bookmark: ', nodes.length);
     nodes.forEach(node => {
       if (node.url) {
         database.addPage({

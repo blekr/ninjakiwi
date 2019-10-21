@@ -13,6 +13,9 @@ class Keyboard extends EventEmitter {
       if (e.code === 'Escape') {
         this.emit('EV_CLOSE');
       }
+      if (e.code === 'Enter') {
+        this.emit('EV_ENTER');
+      }
       if (
         e.code === 'ArrowDown' ||
         (e.code === 'KeyJ' && (e.metaKey || e.ctrlKey))

@@ -51,14 +51,6 @@ export function isSensitive(url) {
 export function normalize(str) {
   // Create regex using 'new RegExp()' instead of the literal /.../u,
   // because the later one will be transformed into wrong ES5 by babel
-  console.log(
-    '-----haha',
-    str,
-    filter(
-      str.split(new RegExp('[^\\p{Alphabetic}\\p{Number}]+', 'u')),
-      item => item && item.length < 50
-    ).join(' ')
-  );
   return filter(
     str.split(new RegExp('[^\\p{Alphabetic}\\p{Number}]+', 'u')),
     item => item && item.length < 50

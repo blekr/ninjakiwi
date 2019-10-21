@@ -1,4 +1,5 @@
 import { applyMiddleware, createStore } from 'redux';
+import get from 'lodash/get';
 import React from 'react';
 import { Provider, connect } from 'react-redux';
 import ReactDom from 'react-dom';
@@ -31,5 +32,14 @@ keyboard.on('EV_BACKWARD', () => {
   store.dispatch(moveBackward());
 });
 keyboard.on('EV_CLOSE', () => {
+  contentCom.callContent(null, 'CLOSE_DIALOG');
+});
+keyboard.on('EV_ENTER', () => {
+  const {
+    manipulate: { index },
+    page: { pages, pageIds }
+  } = store.getState();
+  const page = pages[pageIds[index]];
+  contentCom.callBackground('OPEN_URL', { url: page.url });
   contentCom.callContent(null, 'CLOSE_DIALOG');
 });
