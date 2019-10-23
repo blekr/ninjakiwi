@@ -61,6 +61,10 @@ export function faviconUrl(url) {
   return `chrome://favicon/${url}`;
 }
 
+export function getHostname(url) {
+  return new URL(url).hostname;
+}
+
 export function blobToDataURL(blob) {
   return new Promise(resolve => {
     const reader = new FileReader();

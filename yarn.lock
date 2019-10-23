@@ -2822,6 +2822,11 @@ hash.js@^1.0.0, hash.js@^1.0.3:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.1"
 
+heap@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.npm.taobao.org/heap/download/heap-0.2.6.tgz#087e1f10b046932fc8594dd9e6d378afc9d1e5ac"
+  integrity sha1-CH4fELBGky/IWU3Z5tN4r8nR5aw=
+
 hmac-drbg@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/hmac-drbg/download/hmac-drbg-1.0.1.tgz#d2745701025a6c775a6c545793ed502fc0c649a1"
