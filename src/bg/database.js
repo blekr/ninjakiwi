@@ -1,7 +1,7 @@
 import FlexSearch from 'flexsearch';
 import _ from 'lodash';
 import Heap from 'heap';
-import { normalize, urlToId } from './tools';
+import { getHostname, normalize, urlToId } from './tools';
 import { getCurrentTab } from '../tools';
 
 /*
@@ -96,7 +96,15 @@ class Database {
       if (index < 3) {
         score += [3, 2, 1][index];
       }
-      map[id] = score;
+      map[id] = {
+        score,
+        meta: {
+          titleMatch: {
+            index,
+            score
+          }
+        }
+      };
     });
     return map;
   }
@@ -108,7 +116,15 @@ class Database {
       if (index < 2) {
         score += [2, 1][index];
       }
-      map[id] = score;
+      map[id] = {
+        score,
+        meta: {
+          urlMatch: {
+            index,
+            score
+          }
+        }
+      };
     });
     return map;
   }
@@ -120,7 +136,17 @@ class Database {
       value: this.lastVisit[id]
     }));
     Heap.nlargest(lastVisits, 2, cmp).forEach((item, index) => {
-      map[item.id] += [2, 1][index];
+      const score = [2, 1][index];
+      map[item.id] = {
+        score,
+        meta: {
+          lastVisit: {
+            time: item.value,
+            index,
+            score
+          }
+        }
+      };
     });
     return map;
   }
@@ -132,32 +158,61 @@ class Database {
       value: this.urlVisitCount[id]
     }));
     Heap.nlargest(items, 1, cmp).forEach((item, index) => {
-      map[item.id] += [1][index];
+      const score = [1][index];
+      map[item.id] = {
+        score,
+        meta: {
+          urlVisit: {
+            count: item.value,
+            index,
+            score
+          }
+        }
+      };
     });
     return map;
   }
 
   __getHostVisitScore(ids) {
     const map = {};
-    const items = ids.map(id => ({
-      id,
-      value: this.hostVisitCount[id]
-    }));
+    const items = ids.map(id => {
+      const host = getHostname(this.pages[id].url);
+      return {
+        id,
+        host,
+        value: this.hostVisitCount[urlToId(host)]
+      };
+    });
     Heap.nlargest(items, 2, cmp).forEach((item, index) => {
-      map[item.id] += [2, 1][index];
+      const score = [2, 1][index];
+      map[item.id] = {
+        score,
+        meta: {
+          hostVisit: {
+            host: item.host,
+            count: item.value,
+            index,
+            score
+          }
+        }
+      };
     });
     return map;
   }
 
   __mergeMap(maps) {
     const ret = {};
-    // eslint-disable-next-line no-restricted-syntax
     for (const map of maps) {
-      _.keys(map).forEach(key => {
-        if (ret[key]) {
-          ret[key] += map[key];
+      // Object.entries(maps).forEach(([key, map]) => {
+      Object.entries(map).forEach(([id, value]) => {
+        if (ret[id]) {
+          ret[id].score += value.score;
+          ret[id].meta = { ...ret[id].meta, ...value.meta };
         } else {
-          ret[key] = map[key];
+          ret[id] = {
+            score: value.score,
+            meta: value.meta
+          };
         }
       });
     }
@@ -190,7 +245,12 @@ class Database {
       hostVisitScore
     ]);
 
-    const entries = Heap.nlargest(_.toPairs(merged), 7, (a, b) => a[1] - b[1]);
+    const entries = Heap.nlargest(
+      _.toPairs(merged),
+      7,
+      (a, b) => a[1].score - b[1].score
+    );
+    console.log('search result: ', entries);
     return entries.map(([id]) => this.pages[id]);
   }
 }
