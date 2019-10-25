@@ -1,17 +1,6 @@
-// import React from 'react';
-// import { compose } from 'recompose';
-// import ReactDom from 'react-dom';
-// import { applyMiddleware, createStore } from 'redux';
-// import { Provider, connect } from 'react-redux';
-// import thunk from 'redux-thunk';
-// import reducers from './reducers';
+import debounce from 'lodash/debounce';
 import { keyboard } from '../tools/keyboard';
 import { contentCom } from '../communication/content';
-// import { Container } from './components/container/Container';
-// import { contentCom } from '../communication/content';
-// import { delay, takePhoto } from './tools';
-// import { search } from './actions/search';
-// import { commandMode, moveBackward, moveForward } from './actions/manipulate';
 
 function createOverlap() {
   const overlap = document.createElement('iframe');
@@ -38,46 +27,16 @@ keyboard.on('EV_FLIP', () => {
 });
 contentCom.handle('CLOSE_DIALOG', () => {
   if (opened) {
-    console.log('-----close ...');
     overlap.remove();
     overlap = null;
-    // store = null;
     opened = false;
   }
 });
-// keyboard.on('EV_FORWARD', () => {
-//   if (!opened) {
-//     return;
-//   }
-//   store.dispatch(moveForward());
-// })
-// keyboard.on('EV_BACKWARD', () => {
-//   if (!opened) {
-//     return;
-//   }
-//   store.dispatch(moveBackward());
-// })
-// keyboard.on('EV_COMMAND_MODE', () => {
-//   if (!opened) {
-//     return;
-//   }
-//   store.dispatch(commandMode());
-// })
 
-// (async () => {
-//   await delay(3000);
-//   console.log('----upload photo');
-//   try {
-//     const photo = await takePhoto();
-//     console.log('----upload photo', photo);
-//     await contentCom.callBackground('UPDATE_PHOTO', {
-//       url: window.location.href,
-//       photo
-//     });
-//   } catch (e) {
-//     console.log('----error', e);
-//   }
-//   console.log('-----upload photo finish')
-// })();
+const updatePhoto = debounce(() => {
+  contentCom.callBackground('UPDATE_PHOTO', {});
+}, 500);
 
-// contentCom.handle('TAKE_PHOTO', takePhoto);
+document.addEventListener('scroll', () => {
+  updatePhoto();
+});

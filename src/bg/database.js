@@ -56,6 +56,13 @@ class Database {
     }
   }
 
+  hasPhoto(id) {
+    if (!this.pages[id]) {
+      throw new Error(`${id} not found`);
+    }
+    return !!this.pages[id].screenImg
+  }
+
   updatePhoto(id, photo) {
     if (!this.pages[id]) {
       throw new Error(`${id} not found`);
@@ -202,8 +209,8 @@ class Database {
 
   __mergeMap(maps) {
     const ret = {};
+    // eslint-disable-next-line no-restricted-syntax
     for (const map of maps) {
-      // Object.entries(maps).forEach(([key, map]) => {
       Object.entries(map).forEach(([id, value]) => {
         if (ret[id]) {
           ret[id].score += value.score;
