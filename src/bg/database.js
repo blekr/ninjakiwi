@@ -11,6 +11,8 @@ favicon
 title
 screenImg
 */
+
+const RECENT_SIZE = 7;
 function cmp(a, b) {
   return a.value - b.value;
 }
@@ -31,6 +33,7 @@ class Database {
     this.lastVisit = {};
     this.urlVisitCount = {};
     this.hostVisitCount = {};
+    this.recents = [];
   }
 
   addPage(page) {
@@ -60,7 +63,7 @@ class Database {
     if (!this.pages[id]) {
       throw new Error(`${id} not found`);
     }
-    return !!this.pages[id].screenImg
+    return !!this.pages[id].screenImg;
   }
 
   updatePhoto(id, photo) {
@@ -77,6 +80,11 @@ class Database {
       }
     } else {
       this.lastVisit[id] = time;
+    }
+    if (!_.size(this.recents) || time > this.recents[0].time) {
+      const filtered = _.filter(this.recents, recent => recent.id !== id);
+      filtered.splice(0, 0, { id, time });
+      this.recents = filtered.slice(0, RECENT_SIZE);
     }
   }
 
@@ -226,14 +234,18 @@ class Database {
     return ret;
   }
 
+  buildRecent() {
+    const entries = Heap.nlargest(
+      _.toPairs(this.lastVisit),
+      RECENT_SIZE,
+      (a, b) => a[1] - b[1]
+    );
+    this.recents = entries.map(entry => ({ id: entry[0], time: entry[1] }));
+  }
+
   async search(text) {
     if (!text) {
-      const entries = Heap.nlargest(
-        _.toPairs(this.lastVisit),
-        7,
-        (a, b) => a[1] - b[1]
-      );
-      return entries.map(entry => this.pages[entry[0]]);
+      return this.recents.map(recent => this.pages[recent.id]);
     }
     const titleMatch = await this.titleIndex.search(text);
     const urlMatch = await this.urlIndex.search(text);

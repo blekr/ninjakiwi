@@ -4,13 +4,14 @@ import { database } from './database';
 import {
   defaultFavicon,
   faviconUrl,
-  getAllTabs, getCurrentTab,
+  getAllTabs,
+  getCurrentTab,
   getHostname,
   getScreenshot,
   getTabById,
   getTabByUrl,
   isSensitive,
-  urlToId,
+  urlToId
 } from './tools';
 
 backgroundCom.handle('SEARCH', ({ text }) => database.search(text));
@@ -161,6 +162,7 @@ async function run() {
   await loadAllTabs();
   loadAllBookmarks();
   loadAllHistory();
+  database.buildRecent();
 }
 
 run().catch();

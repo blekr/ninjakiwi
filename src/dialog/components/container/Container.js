@@ -15,7 +15,6 @@ import { Tab } from '../tab/Tab';
 import { search } from '../../actions/search';
 import { setIndex } from '../../actions/manipulate';
 import { contentCom } from '../../../communication/content';
-import { backgroundCom } from '../../../communication/background';
 
 function render({
   text,
@@ -97,7 +96,6 @@ export const Container = compose(
   }),
   lifecycle({
     componentDidMount() {
-      this.props.search();
       this.props.inputRef.current.focus();
     }
   })
