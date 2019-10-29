@@ -34,7 +34,9 @@ contentCom.handle('CLOSE_DIALOG', () => {
 });
 
 const updatePhoto = debounce(() => {
-  contentCom.callBackground('UPDATE_PHOTO', {});
+  if (!opened) {
+    contentCom.callBackground('UPDATE_PHOTO', {});
+  }
 }, 500);
 
 document.addEventListener('scroll', () => {
