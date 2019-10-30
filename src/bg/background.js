@@ -82,6 +82,13 @@ chrome.tabs.onActivated.addListener(async ({ tabId, windowId }) => {
   database.updatePhoto(id, png);
 });
 
+chrome.commands.onCommand.addListener(() => {
+  console.log('-----inject ...');
+  chrome.tabs.executeScript({
+    file: 'open.js'
+  });
+});
+
 async function loadAllTabs() {
   const now = new Date().getTime();
   const allTabs = await getAllTabs();

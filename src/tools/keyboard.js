@@ -8,7 +8,7 @@ class Keyboard extends EventEmitter {
         return;
       }
       if (e.code === 'KeyE' && (e.metaKey || e.ctrlKey)) {
-        this.emit('EV_FLIP');
+        this.emit('EV_OPEN');
       }
       if (e.code === 'Escape') {
         this.emit('EV_CLOSE');

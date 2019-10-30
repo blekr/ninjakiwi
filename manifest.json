@@ -13,6 +13,22 @@
     "scripts": ["background.js", "hotReload.js"],
     "persistent": true
   },
+  "commands": {
+    "openUbala1": {
+      "suggested_key": {
+        "default": "Ctrl+E",
+        "mac": "Command+E"
+      },
+      "description": "Open Ubala"
+    },
+    "openUbala2": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+1"
+      },
+      "description": "Open Ubala",
+      "global": true
+    }
+  },
   "options_page": "options.html",
   "browser_action": {
     "default_icon": "assets/icon19.png",
@@ -22,7 +38,7 @@
   "permissions": ["bookmarks", "history", "tabs", "activeTab", "<all_urls>"],
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*", "file:///private/tmp/a.html"],
+      "matches": ["http://*/*", "https://*/*"],
       "js": ["content.js"]
     }
   ],

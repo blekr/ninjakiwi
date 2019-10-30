@@ -21,7 +21,7 @@ import { search } from './actions/search';
     document.getElementById('root')
   );
 
-  keyboard.on('EV_FLIP', () => {
+  keyboard.on('EV_OPEN', () => {
     store.dispatch(moveForward());
   });
   keyboard.on('EV_FORWARD', () => {
