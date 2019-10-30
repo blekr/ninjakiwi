@@ -11,6 +11,8 @@ import {
   getTabById,
   getTabByUrl,
   isSensitive,
+  updateTab,
+  updateWindow,
   urlToId
 } from './tools';
 
@@ -18,8 +20,8 @@ backgroundCom.handle('SEARCH', ({ text }) => database.search(text));
 backgroundCom.handle('OPEN_URL', async ({ url }) => {
   const tab = await getTabByUrl(url);
   if (tab) {
-    chrome.tabs.update(tab.id, { active: true });
-    chrome.windows.update(tab.windowId, { focused: true });
+    await updateTab(tab.id, { active: true });
+    await updateWindow(tab.windowId, { focused: true });
 
     const id = urlToId(url);
     const hostId = urlToId(getHostname(url));

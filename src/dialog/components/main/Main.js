@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import styles from './Main.scss';
 import { Container } from '../container/Container';
 import { contentCom } from '../../../communication/content';
+import { closeDialog } from '../../tools';
 
 function render({ bgImg, closerRef, onClick }) {
   return (
@@ -35,7 +36,7 @@ export const Main = compose(
   withHandlers({
     onClick: ({ closerRef }) => e => {
       if (e.target === closerRef.current) {
-        contentCom.callContent(null, 'CLOSE_DIALOG');
+        closeDialog();
       }
     }
   })

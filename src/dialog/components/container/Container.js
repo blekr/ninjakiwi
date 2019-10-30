@@ -15,6 +15,7 @@ import { Tab } from '../tab/Tab';
 import { search } from '../../actions/search';
 import { setIndex } from '../../actions/manipulate';
 import { contentCom } from '../../../communication/content';
+import { closeDialog } from '../../tools';
 
 function render({
   text,
@@ -84,9 +85,9 @@ export const Container = compose(
   withHandlers(({ search }) => {
     const debounceSearch = debounce(text => search(text), 10);
     return {
-      openUrl: () => url => {
-        contentCom.callBackground('OPEN_URL', { url });
-        contentCom.callContent(null, 'CLOSE_DIALOG');
+      openUrl: () => async url => {
+        await contentCom.callBackground('OPEN_URL', { url });
+        closeDialog();
       },
       onChangeText: ({ setText }) => text => {
         setText(text);

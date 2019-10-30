@@ -13,6 +13,18 @@ function createOverlap() {
 }
 
 const oldElement = document.querySelector('iframe#ubala-root');
-if (!oldElement) {
-  document.body.appendChild(createOverlap());
+if (oldElement) {
+  oldElement.contentWindow.postMessage('WIN_EV_FORWARD', '*');
+} else {
+  const overlay = createOverlap();
+  document.body.appendChild(overlay);
+  window.addEventListener(
+    'message',
+    ev => {
+      if (ev.data === 'WIN_EV_CLOSE') {
+        overlay.remove();
+      }
+    },
+    { once: true }
+  );
 }

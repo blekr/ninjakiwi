@@ -3,3 +3,7 @@ export function getCurrentTab() {
     chrome.tabs.getCurrent(resolve);
   });
 }
+
+export function closeDialog() {
+  window.parent.postMessage('WIN_EV_CLOSE', '*');
+}

@@ -7,9 +7,6 @@ class Keyboard extends EventEmitter {
       if (e.isComposing || e.keyCode === 229) {
         return;
       }
-      if (e.code === 'KeyE' && (e.metaKey || e.ctrlKey)) {
-        this.emit('EV_OPEN');
-      }
       if (e.code === 'Escape') {
         this.emit('EV_CLOSE');
       }

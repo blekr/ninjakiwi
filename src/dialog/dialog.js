@@ -9,6 +9,7 @@ import { moveBackward, moveForward } from './actions/manipulate';
 import { contentCom } from '../communication/content';
 import { Main } from './components/main/Main';
 import { search } from './actions/search';
+import { closeDialog } from './tools';
 
 (async function() {
   const store = createStore(reducers, applyMiddleware(thunk));
@@ -21,9 +22,6 @@ import { search } from './actions/search';
     document.getElementById('root')
   );
 
-  keyboard.on('EV_OPEN', () => {
-    store.dispatch(moveForward());
-  });
   keyboard.on('EV_FORWARD', () => {
     store.dispatch(moveForward());
   });
@@ -31,15 +29,20 @@ import { search } from './actions/search';
     store.dispatch(moveBackward());
   });
   keyboard.on('EV_CLOSE', () => {
-    contentCom.callContent(null, 'CLOSE_DIALOG');
+    closeDialog();
   });
-  keyboard.on('EV_ENTER', () => {
+  keyboard.on('EV_ENTER', async () => {
     const {
       manipulate: { index },
       page: { pages, pageIds }
     } = store.getState();
     const page = pages[pageIds[index]];
-    contentCom.callBackground('OPEN_URL', { url: page.url });
-    contentCom.callContent(null, 'CLOSE_DIALOG');
+    await contentCom.callBackground('OPEN_URL', { url: page.url });
+    closeDialog();
+  });
+  window.addEventListener('message', ev => {
+    if (ev.data === 'WIN_EV_FORWARD') {
+      store.dispatch(moveForward());
+    }
   });
 })();
