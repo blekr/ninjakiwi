@@ -3,6 +3,7 @@ import { backgroundCom } from '../communication/background';
 import { database } from './database';
 import {
   defaultFavicon,
+  executeScript,
   faviconUrl,
   getAllTabs,
   getCurrentTab,
@@ -45,6 +46,7 @@ backgroundCom.handle('UPDATE_PHOTO', async () => {
 
 chrome.tabs.onUpdated.addListener(async (tabId, { status }, tab) => {
   console.log('on updated: ', tab.url, status);
+  // if (!tab.url)
   if (!tab.url || isSensitive(tab.url) || status !== 'complete') {
     return;
   }
@@ -75,7 +77,9 @@ chrome.tabs.onActivated.addListener(async ({ tabId, windowId }) => {
   }
 
   const id = urlToId(tab.url);
-  database.setLastVisit(id, new Date().getTime());
+  if (database.exists(id)) {
+    database.setLastVisit(id, new Date().getTime());
+  }
 
   if (isSensitive(tab.url) || database.hasPhoto(id)) {
     return;
@@ -84,11 +88,22 @@ chrome.tabs.onActivated.addListener(async ({ tabId, windowId }) => {
   database.updatePhoto(id, png);
 });
 
-chrome.commands.onCommand.addListener(() => {
-  console.log('-----inject ...');
-  chrome.tabs.executeScript({
+chrome.commands.onCommand.addListener(async command => {
+  if (command !== 'toggleDialog1' && command !== 'toggleDialog2') {
+    return;
+  }
+  const currentTab = await getCurrentTab();
+  if (currentTab.url === chrome.runtime.getURL('dialog.html')) {
+    await backgroundCom.callContent('EXT_EV_FORWARD', {}, currentTab.id);
+    return;
+  }
+  console.log('-----current tab', currentTab);
+  const results = await executeScript({
     file: 'open.js'
   });
+  if (!results) {
+    chrome.tabs.create({ url: 'dialog.html', active: true });
+  }
 });
 
 async function loadAllTabs() {

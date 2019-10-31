@@ -97,3 +97,9 @@ export function updateWindow(windowId, props) {
     chrome.windows.update(windowId, props, resolve);
   });
 }
+
+export function executeScript(details) {
+  return new Promise(resolve => {
+    chrome.tabs.executeScript(details, resolve);
+  });
+}

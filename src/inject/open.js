@@ -1,3 +1,5 @@
+/* eslint-disable no-inner-declarations */
+
 function createOverlap() {
   const overlap = document.createElement('iframe');
   overlap.id = 'ubala-root';
@@ -18,13 +20,12 @@ if (oldElement) {
 } else {
   const overlay = createOverlap();
   document.body.appendChild(overlay);
-  window.addEventListener(
-    'message',
-    ev => {
-      if (ev.data === 'WIN_EV_CLOSE') {
-        overlay.remove();
-      }
-    },
-    { once: true }
-  );
+
+  function onMessage(ev) {
+    if (ev.data === 'WIN_EV_CLOSE') {
+      overlay.remove();
+      window.removeEventListener('message', onMessage);
+    }
+  }
+  window.addEventListener('message', onMessage);
 }

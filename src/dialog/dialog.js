@@ -45,4 +45,7 @@ import { closeDialog } from './tools';
       store.dispatch(moveForward());
     }
   });
+  contentCom.handle('EXT_EV_FORWARD', () => {
+    store.dispatch(moveForward());
+  });
 })();

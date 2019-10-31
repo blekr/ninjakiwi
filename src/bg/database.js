@@ -59,6 +59,10 @@ class Database {
     }
   }
 
+  exists(id) {
+    return !!this.pages[id];
+  }
+
   hasPhoto(id) {
     if (!this.pages[id]) {
       throw new Error(`${id} not found`);

@@ -14,14 +14,14 @@
     "persistent": true
   },
   "commands": {
-    "openUbala1": {
+    "toggleDialog1": {
       "suggested_key": {
         "default": "Ctrl+E",
         "mac": "Command+E"
       },
       "description": "Open Ubala"
     },
-    "openUbala2": {
+    "toggleDialog2": {
       "suggested_key": {
         "default": "Ctrl+Shift+1"
       },
@@ -35,7 +35,14 @@
     "default_title": "browser action demo",
     "default_popup": "src/browser_action/browser_action.html"
   },
-  "permissions": ["bookmarks", "history", "tabs", "activeTab", "<all_urls>"],
+  "permissions": [
+    "bookmarks",
+    "history",
+    "tabs",
+    "activeTab",
+    "<all_urls>",
+    "chrome-error://chromewebdata/"
+  ],
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
