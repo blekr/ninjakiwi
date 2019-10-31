@@ -4,8 +4,7 @@ import { compose, withHandlers, withProps, withState } from 'recompose';
 import { connect } from 'react-redux';
 import styles from './Main.scss';
 import { Container } from '../container/Container';
-import { contentCom } from '../../../communication/content';
-import { closeDialog } from '../../tools';
+import { activateLast, closeDialog } from '../../tools';
 
 function render({ bgImg, closerRef, onClick }) {
   return (
@@ -34,9 +33,10 @@ export const Main = compose(
     closerRef: React.createRef()
   }),
   withHandlers({
-    onClick: ({ closerRef }) => e => {
+    onClick: ({ closerRef }) => async e => {
       if (e.target === closerRef.current) {
-        closeDialog();
+        await activateLast();
+        await closeDialog();
       }
     }
   })

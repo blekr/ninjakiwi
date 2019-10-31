@@ -1,5 +1,5 @@
 import isNil from 'lodash/isNil';
-import { getCurrentTab } from '../dialog/tools';
+import { getCurrentTab } from '../inject/tools';
 
 class ContentCommunication {
   constructor() {

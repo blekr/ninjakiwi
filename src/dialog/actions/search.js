@@ -1,12 +1,11 @@
 import filter from 'lodash/filter';
 import { contentCom } from '../../communication/content';
-import { getCurrentTab } from '../tools';
+import { getCurrentTab } from '../../inject/tools';
 
 export function search(text) {
   return async dispatch => {
     const pages = await contentCom.callBackground('SEARCH', { text });
     const currentTab = await getCurrentTab();
-    console.log('------current tab', currentTab, pages);
     const filtered = filter(pages, page => page.url !== currentTab.url);
     dispatch({
       type: 'SET_PAGES',

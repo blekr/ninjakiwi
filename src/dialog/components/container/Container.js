@@ -87,7 +87,7 @@ export const Container = compose(
     return {
       openUrl: () => async url => {
         await contentCom.callBackground('OPEN_URL', { url });
-        closeDialog();
+        await closeDialog();
       },
       onChangeText: ({ setText }) => text => {
         setText(text);

@@ -12,10 +12,13 @@ import {
   getTabById,
   getTabByUrl,
   isSensitive,
+  removeTab,
   updateTab,
   updateWindow,
   urlToId
 } from './tools';
+
+let lastTabId;
 
 backgroundCom.handle('SEARCH', ({ text }) => database.search(text));
 backgroundCom.handle('OPEN_URL', async ({ url }) => {
@@ -42,6 +45,14 @@ backgroundCom.handle('UPDATE_PHOTO', async () => {
   }
   const png = await getScreenshot();
   database.updatePhoto(urlToId(tab.url), png);
+});
+
+backgroundCom.handle('CLOSE_TAB', async ({ tabId }) => removeTab(tabId));
+backgroundCom.handle('ACTIVATE_LAST_TAB', async () => {
+  if (lastTabId) {
+    await updateTab(lastTabId, { active: true });
+    lastTabId = null;
+  }
 });
 
 chrome.tabs.onUpdated.addListener(async (tabId, { status }, tab) => {
@@ -102,6 +113,7 @@ chrome.commands.onCommand.addListener(async command => {
     file: 'open.js'
   });
   if (!results) {
+    lastTabId = currentTab.id;
     chrome.tabs.create({ url: 'dialog.html', active: true });
   }
 });

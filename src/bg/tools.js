@@ -98,6 +98,12 @@ export function updateWindow(windowId, props) {
   });
 }
 
+export function removeTab(tabId) {
+  return new Promise(resolve => {
+    chrome.tabs.remove(tabId, resolve);
+  });
+}
+
 export function executeScript(details) {
   return new Promise(resolve => {
     chrome.tabs.executeScript(details, resolve);
