@@ -4,7 +4,7 @@ import { compose, withHandlers, withProps, withState } from 'recompose';
 import { connect } from 'react-redux';
 import styles from './Main.scss';
 import { Container } from '../container/Container';
-import { activateLast, closeDialog } from '../../tools';
+import { cancel } from '../../actions/opener';
 
 function render({ bgImg, closerRef, onClick }) {
   return (
@@ -26,17 +26,23 @@ function render({ bgImg, closerRef, onClick }) {
 }
 
 export const Main = compose(
-  connect(({ manipulate: { index }, page: { pages, pageIds } }) => ({
-    bgImg: get(get(pages, get(pageIds, index)), 'screenImg')
-  })),
+  connect(
+    ({ manipulate: { index }, page: { pages, pageIds } }) => ({
+      bgImg: get(get(pages, get(pageIds, index)), 'screenImg')
+    }),
+    dispatch => ({
+      cancel() {
+        dispatch(cancel());
+      }
+    })
+  ),
   withProps({
     closerRef: React.createRef()
   }),
   withHandlers({
-    onClick: ({ closerRef }) => async e => {
+    onClick: ({ closerRef, cancel }) => async e => {
       if (e.target === closerRef.current) {
-        await activateLast();
-        await closeDialog();
+        cancel();
       }
     }
   })

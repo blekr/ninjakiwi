@@ -104,6 +104,12 @@ export function removeTab(tabId) {
   });
 }
 
+export function createTab(url) {
+  return new Promise(resolve => {
+    chrome.tabs.create({ url, active: true }, resolve);
+  });
+}
+
 export function executeScript(details) {
   return new Promise(resolve => {
     chrome.tabs.executeScript(details, resolve);

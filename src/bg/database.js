@@ -71,10 +71,9 @@ class Database {
   }
 
   updatePhoto(id, photo) {
-    if (!this.pages[id]) {
-      throw new Error(`${id} not found`);
+    if (this.pages[id]) {
+      this.pages[id].screenImg = photo;
     }
-    this.pages[id].screenImg = photo;
   }
 
   setLastVisit(id, time) {

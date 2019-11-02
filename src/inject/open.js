@@ -1,6 +1,7 @@
 /* eslint-disable no-inner-declarations */
 
 function createOverlap() {
+  const url = encodeURIComponent(window.location.href);
   const overlap = document.createElement('iframe');
   overlap.id = 'ubala-root';
   overlap.style.position = 'fixed';
@@ -10,7 +11,10 @@ function createOverlap() {
   overlap.style.height = '100%';
   overlap.style.zIndex = '100000000';
   overlap.style.border = 'none';
-  overlap.setAttribute('src', chrome.extension.getURL('dialog.html'));
+  overlap.setAttribute(
+    'src',
+    `${chrome.extension.getURL('dialog.html')}?url=${url}`
+  );
   return overlap;
 }
 

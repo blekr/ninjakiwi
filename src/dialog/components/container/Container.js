@@ -14,8 +14,7 @@ import styles from './Container.scss';
 import { Tab } from '../tab/Tab';
 import { search } from '../../actions/search';
 import { setIndex } from '../../actions/manipulate';
-import { contentCom } from '../../../communication/content';
-import { closeDialog } from '../../tools';
+import { goto } from '../../actions/opener';
 
 function render({
   text,
@@ -75,6 +74,9 @@ export const Container = compose(
       },
       setIndex(index) {
         dispatch(setIndex(index));
+      },
+      goto(url) {
+        dispatch(goto(url));
       }
     })
   ),
@@ -85,9 +87,8 @@ export const Container = compose(
   withHandlers(({ search }) => {
     const debounceSearch = debounce(text => search(text), 10);
     return {
-      openUrl: () => async url => {
-        await contentCom.callBackground('OPEN_URL', { url });
-        await closeDialog();
+      openUrl: ({ goto }) => async url => {
+        goto(url);
       },
       onChangeText: ({ setText }) => text => {
         setText(text);

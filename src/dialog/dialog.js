@@ -9,18 +9,10 @@ import { moveBackward, moveForward } from './actions/manipulate';
 import { contentCom } from '../communication/content';
 import { Main } from './components/main/Main';
 import { search } from './actions/search';
-import { activateLast, closeDialog } from './tools';
+import { cancel, goto, setOpener } from './actions/opener';
 
 (async function() {
   const store = createStore(reducers, applyMiddleware(thunk));
-  await store.dispatch(search(''));
-
-  ReactDom.render(
-    <Provider store={store}>
-      <Main />
-    </Provider>,
-    document.getElementById('root')
-  );
 
   keyboard.on('EV_FORWARD', () => {
     store.dispatch(moveForward());
@@ -29,8 +21,7 @@ import { activateLast, closeDialog } from './tools';
     store.dispatch(moveBackward());
   });
   keyboard.on('EV_CLOSE', async () => {
-    await activateLast();
-    await closeDialog();
+    store.dispatch(cancel());
   });
   keyboard.on('EV_ENTER', async () => {
     const {
@@ -38,8 +29,7 @@ import { activateLast, closeDialog } from './tools';
       page: { pages, pageIds }
     } = store.getState();
     const page = pages[pageIds[index]];
-    await contentCom.callBackground('OPEN_URL', { url: page.url });
-    await closeDialog();
+    store.dispatch(goto(page.url));
   });
   window.addEventListener('message', ev => {
     if (ev.data === 'WIN_EV_FORWARD') {
@@ -49,4 +39,24 @@ import { activateLast, closeDialog } from './tools';
   contentCom.handle('EXT_EV_FORWARD', () => {
     store.dispatch(moveForward());
   });
+  const { searchParams } = new URL(window.location.href);
+  const tabId = searchParams.get('tabId');
+  const url = searchParams.get('url');
+  store.dispatch(
+    setOpener({
+      tabId: tabId && parseInt(tabId, 10),
+      url
+    })
+  );
+  await store.dispatch(search(''));
+
+  ReactDom.render(
+    <Provider store={store}>
+      <Main />
+    </Provider>,
+    document.getElementById('root')
+  );
+
+  // TODO debug only
+  chrome.store = store;
 })();
