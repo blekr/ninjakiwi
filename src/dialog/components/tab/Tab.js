@@ -4,8 +4,8 @@ import styles from './Tab.scss';
 
 export function Tab({
   favicon,
-  title,
-  url,
+  coloredTitle,
+  coloredUrl,
   labels = [],
   active,
   cls,
@@ -29,9 +29,15 @@ export function Tab({
               </div>
             ))}
           </div>
-          <div className={styles.title}>{title}</div>
+          <div
+            className={styles.title}
+            dangerouslySetInnerHTML={{ __html: coloredTitle }}
+          />
         </div>
-        <div className={styles.url}>{url}</div>
+        <div
+          className={styles.url}
+          dangerouslySetInnerHTML={{ __html: coloredUrl }}
+        />
       </div>
     </div>
   );

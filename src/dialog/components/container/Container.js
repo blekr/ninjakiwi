@@ -15,6 +15,7 @@ import { Tab } from '../tab/Tab';
 import { search } from '../../actions/search';
 import { setIndex } from '../../actions/manipulate';
 import { goto } from '../../actions/opener';
+import { setText } from '../../actions/input';
 
 function render({
   text,
@@ -63,10 +64,11 @@ function render({
 
 export const Container = compose(
   connect(
-    ({ page: { pages, pageIds }, manipulate }) => ({
+    ({ input, page: { pages, pageIds }, manipulate }) => ({
       pages: pageIds.map(pageId => pages[pageId]),
       manipulate,
-      hasBgImg: !!get(get(pages, get(pageIds, manipulate.index)), 'screenImg')
+      hasBgImg: !!get(get(pages, get(pageIds, manipulate.index)), 'screenImg'),
+      text: input
     }),
     dispatch => ({
       search(text) {
@@ -77,10 +79,12 @@ export const Container = compose(
       },
       goto(url) {
         dispatch(goto(url));
+      },
+      setText(text) {
+        dispatch(setText(text));
       }
     })
   ),
-  withState('text', 'setText', ''),
   withProps({
     inputRef: React.createRef()
   }),

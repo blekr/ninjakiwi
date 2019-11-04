@@ -24,6 +24,7 @@ const IGNORE_LIST = ['chrome://newtab/', DIALOG_URL];
 
 function addPage({ url, favicon, title, lastVisit, visitCount }) {
   if (IGNORE_LIST.filter(item => url.indexOf(item) >= 0).length > 0) {
+    console.log('---ignore', url);
     return;
   }
   const id = urlToId(url);
@@ -64,7 +65,6 @@ backgroundCom.handle('UPDATE_PHOTO', async () => {
   }
   const png = await getScreenshot();
   database.updatePhoto(urlToId(tab.url), png);
-  console.log('-----updated', png);
 });
 
 backgroundCom.handle('CLOSE_TAB', async ({ tabId }) => removeTab(tabId));
@@ -156,43 +156,51 @@ async function loadAllTabs() {
 }
 
 function loadAllBookmarks() {
-  function saveNodes(nodes) {
-    nodes.forEach(node => {
-      if (node.url) {
-        addPage({
-          url: node.url,
-          favicon: faviconUrl(node.url),
-          title: node.title,
-          lastVisit: node.dateAdded || 0,
-          visitCount: 1
-        });
-      }
-      if (size(node.children)) {
-        saveNodes(node.children);
-      }
+  return new Promise(resolve => {
+    function saveNodes(nodes) {
+      nodes.forEach(node => {
+        if (node.url) {
+          addPage({
+            url: node.url,
+            favicon: faviconUrl(node.url),
+            title: node.title,
+            lastVisit: node.dateAdded || 0,
+            visitCount: 1
+          });
+        }
+        if (size(node.children)) {
+          saveNodes(node.children);
+        }
+      });
+    }
+    chrome.bookmarks.getTree(nodes => {
+      saveNodes(nodes);
+      resolve();
     });
-  }
-  chrome.bookmarks.getTree(saveNodes);
+  });
 }
 
 function loadAllHistory() {
-  chrome.history.search({ text: '', maxResults: 10000 }, items => {
-    items.forEach(item => {
-      addPage({
-        url: item.url,
-        favicon: faviconUrl(item.url),
-        title: item.title,
-        lastVisit: item.lastVisitTime || 0,
-        visitCount: item.visitCount
+  return new Promise(resolve => {
+    chrome.history.search({ text: '', maxResults: 10000 }, items => {
+      items.forEach(item => {
+        addPage({
+          url: item.url,
+          favicon: faviconUrl(item.url),
+          title: item.title,
+          lastVisit: item.lastVisitTime || 0,
+          visitCount: item.visitCount
+        });
       });
+      resolve();
     });
   });
 }
 
 async function run() {
   await loadAllTabs();
-  loadAllBookmarks();
-  loadAllHistory();
+  await loadAllBookmarks();
+  await loadAllHistory();
   database.buildRecent();
 }
 
