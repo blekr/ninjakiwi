@@ -1,8 +1,7 @@
 import FlexSearch from 'flexsearch';
 import _ from 'lodash';
 import Heap from 'heap';
-import { getHostname, normalize, urlToId } from './tools';
-import { getCurrentTab } from '../tools';
+import { getAllTabs, getHostname, normalize, urlToId } from './tools';
 
 /*
 id
@@ -16,6 +15,15 @@ const RECENT_SIZE = 7;
 function cmp(a, b) {
   return a.value - b.value;
 }
+
+const WEIGHTS = {
+  title: [33, 30, 28, 5, 5, 5],
+  tab: 20,
+  recent: [25, 15, 13, 2, 2, 2],
+  totalUrl: [8, 6, 4, 2, 2, 2],
+  totalHost: [6, 4, 2, 1, 1, 1],
+  url: [6, 4, 2, 2, 2, 2]
+};
 
 class Database {
   constructor() {
@@ -110,10 +118,7 @@ class Database {
   __getTitleMatchScore(titleMatch) {
     const map = {};
     titleMatch.forEach((id, index) => {
-      let score = 1;
-      if (index < 3) {
-        score += [3, 2, 1][index];
-      }
+      const score = index >= WEIGHTS.title.length ? 0 : WEIGHTS.title[index];
       map[id] = {
         score,
         meta: {
@@ -130,10 +135,7 @@ class Database {
   __getUrlMatchScore(urlMatch) {
     const map = {};
     urlMatch.forEach((id, index) => {
-      let score = 0;
-      if (index < 2) {
-        score += [2, 1][index];
-      }
+      const score = index >= WEIGHTS.url.length ? 0 : WEIGHTS.url[index];
       map[id] = {
         score,
         meta: {
@@ -153,19 +155,21 @@ class Database {
       id,
       value: this.lastVisit[id]
     }));
-    Heap.nlargest(lastVisits, 2, cmp).forEach((item, index) => {
-      const score = [2, 1][index];
-      map[item.id] = {
-        score,
-        meta: {
-          lastVisit: {
-            time: item.value,
-            index,
-            score
+    Heap.nlargest(lastVisits, WEIGHTS.recent.length, cmp).forEach(
+      (item, index) => {
+        const score = WEIGHTS.recent[index];
+        map[item.id] = {
+          score,
+          meta: {
+            lastVisit: {
+              time: item.value,
+              index,
+              score
+            }
           }
-        }
-      };
-    });
+        };
+      }
+    );
     return map;
   }
 
@@ -175,19 +179,21 @@ class Database {
       id,
       value: this.urlVisitCount[id]
     }));
-    Heap.nlargest(items, 1, cmp).forEach((item, index) => {
-      const score = [1][index];
-      map[item.id] = {
-        score,
-        meta: {
-          urlVisit: {
-            count: item.value,
-            index,
-            score
+    Heap.nlargest(items, WEIGHTS.totalUrl.length, cmp).forEach(
+      (item, index) => {
+        const score = WEIGHTS.totalUrl[index];
+        map[item.id] = {
+          score,
+          meta: {
+            urlVisit: {
+              count: item.value,
+              index,
+              score
+            }
           }
-        }
-      };
-    });
+        };
+      }
+    );
     return map;
   }
 
@@ -201,8 +207,8 @@ class Database {
         value: this.hostVisitCount[urlToId(host)]
       };
     });
-    Heap.nlargest(items, 2, cmp).forEach((item, index) => {
-      const score = [2, 1][index];
+    Heap.nlargest(items, WEIGHTS.totalHost, cmp).forEach((item, index) => {
+      const score = WEIGHTS.totalHost[index];
       map[item.id] = {
         score,
         meta: {
@@ -214,6 +220,28 @@ class Database {
           }
         }
       };
+    });
+    return map;
+  }
+
+  async __getTabScore(ids) {
+    const allTabs = await getAllTabs();
+    const exists = {};
+    allTabs.forEach(tab => {
+      exists[urlToId(tab.url)] = true;
+    });
+    const map = {};
+    ids.forEach(id => {
+      if (exists[id]) {
+        map[id] = {
+          score: WEIGHTS.tab,
+          meta: {
+            tab: {
+              score: WEIGHTS.tab
+            }
+          }
+        };
+      }
     });
     return map;
   }
@@ -257,14 +285,17 @@ class Database {
     const urlMatchScore = this.__getUrlMatchScore(urlMatch);
 
     const map = this.__mergeMap([titleMatchScore, urlMatchScore]);
-    const lastVisitScore = this.__getLastVisitScore(_.keys(map));
-    const urlVisitScore = this.__getUrlVisitScore(_.keys(map));
-    const hostVisitScore = this.__getHostVisitScore(_.keys(map));
+    const keys = _.keys(map);
+    const lastVisitScore = this.__getLastVisitScore(keys);
+    const urlVisitScore = this.__getUrlVisitScore(keys);
+    const hostVisitScore = this.__getHostVisitScore(keys);
+    const tabScore = await this.__getTabScore(keys);
     const merged = this.__mergeMap([
       map,
       lastVisitScore,
       urlVisitScore,
-      hostVisitScore
+      hostVisitScore,
+      tabScore
     ]);
 
     const entries = Heap.nlargest(

@@ -24,7 +24,6 @@ const IGNORE_LIST = ['chrome://newtab/', DIALOG_URL];
 
 function addPage({ url, favicon, title, lastVisit, visitCount }) {
   if (IGNORE_LIST.filter(item => url.indexOf(item) >= 0).length > 0) {
-    console.log('---ignore', url);
     return;
   }
   const id = urlToId(url);

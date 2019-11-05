@@ -4,12 +4,13 @@ import { getCurrentTab } from '../inject/tools';
 class ContentCommunication {
   constructor() {
     this.map = {};
-    chrome.runtime.onMessage.addListener((...params) =>
-      this.handleRequest(...params)
-    );
+    chrome.runtime.onMessage.addListener((...params) => {
+      this.handleRequest(...params);
+      return true;
+    });
   }
 
-  async handleRequest(message, sender, sendResponse) {
+  handleRequest(message, sender, sendResponse) {
     if (typeof message !== 'object') {
       return;
     }
@@ -20,8 +21,7 @@ class ContentCommunication {
     if (!this.map[endpoint]) {
       throw new Error(`endpoint ${endpoint} not found`);
     }
-    const response = await this.map[endpoint](data);
-    sendResponse(response);
+    this.map[endpoint](data).then(sendResponse);
   }
 
   callBackground(endpoint, data) {

@@ -16,7 +16,6 @@ export function search(text) {
       .replace(/ +/g, ' ');
     if (refinedText) {
       const keywords = refinedText.split(' ');
-      console.log('---keywords', keywords, colorString('2019年李毅教授暢談兩岸統一模式 全程高能(下集) - YouTube', ['2019']))
       colored = filtered.map(page => ({
         ...page,
         coloredTitle: colorString(page.title, keywords),

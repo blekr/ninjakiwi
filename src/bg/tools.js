@@ -2,7 +2,7 @@ import md5 from 'md5';
 import get from 'lodash/get';
 import filter from 'lodash/filter';
 
-export async function getAllTabs() {
+export function getAllTabs() {
   return new Promise(resolve => {
     chrome.tabs.query({}, resolve);
   });
