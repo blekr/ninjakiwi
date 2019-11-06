@@ -39,7 +39,9 @@ function addPage({ url, favicon, title, lastVisit, visitCount }) {
   database.addHostVisitCount(hostId, visitCount);
 }
 
-backgroundCom.handle('SEARCH', ({ text }) => database.search(text));
+backgroundCom.handle('SEARCH', ({ text, excludeUrl }) =>
+  database.search(text, excludeUrl)
+);
 backgroundCom.handle('OPEN_URL', async ({ url }) => {
   const tab = await getTabByUrl(url);
   if (tab) {

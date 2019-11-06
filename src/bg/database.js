@@ -115,9 +115,13 @@ class Database {
     }
   }
 
-  __getTitleMatchScore(titleMatch) {
+  __getTitleMatchScore(titleMatch, excludeId) {
     const map = {};
-    titleMatch.forEach((id, index) => {
+    let index = 0;
+    titleMatch.forEach(id => {
+      if (id === excludeId) {
+        return;
+      }
       const score = index >= WEIGHTS.title.length ? 0 : WEIGHTS.title[index];
       map[id] = {
         score,
@@ -128,13 +132,18 @@ class Database {
           }
         }
       };
+      index += 1;
     });
     return map;
   }
 
-  __getUrlMatchScore(urlMatch) {
+  __getUrlMatchScore(urlMatch, excludeId) {
     const map = {};
-    urlMatch.forEach((id, index) => {
+    let index = 0;
+    urlMatch.forEach(id => {
+      if (id === excludeId) {
+        return;
+      }
       const score = index >= WEIGHTS.url.length ? 0 : WEIGHTS.url[index];
       map[id] = {
         score,
@@ -145,6 +154,7 @@ class Database {
           }
         }
       };
+      index += 1;
     });
     return map;
   }
@@ -274,15 +284,19 @@ class Database {
     this.recents = entries.map(entry => ({ id: entry[0], time: entry[1] }));
   }
 
-  async search(text) {
+  async search(text, excludeUrl) {
+    const excludeId = urlToId(excludeUrl);
     if (!text) {
-      return this.recents.map(recent => this.pages[recent.id]);
+      return this.recents
+        .filter(recent => recent.id !== excludeId)
+        .slice(0, 6)
+        .map(recent => this.pages[recent.id]);
     }
     const titleMatch = await this.titleIndex.search(text);
     const urlMatch = await this.urlIndex.search(text);
 
-    const titleMatchScore = this.__getTitleMatchScore(titleMatch);
-    const urlMatchScore = this.__getUrlMatchScore(urlMatch);
+    const titleMatchScore = this.__getTitleMatchScore(titleMatch, excludeId);
+    const urlMatchScore = this.__getUrlMatchScore(urlMatch, excludeId);
 
     const map = this.__mergeMap([titleMatchScore, urlMatchScore]);
     const keys = _.keys(map);
@@ -300,7 +314,7 @@ class Database {
 
     const entries = Heap.nlargest(
       _.toPairs(merged),
-      7,
+      6,
       (a, b) => a[1].score - b[1].score
     );
     console.log('search result: ', entries);
