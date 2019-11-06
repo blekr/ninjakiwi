@@ -37,9 +37,7 @@ export async function getAllWindows() {
 export async function getScreenshot(windowId) {
   return new Promise(resolve => {
     try {
-      console.log('----t1', new Date().getTime());
       chrome.tabs.captureVisibleTab(windowId, {}, resolve);
-      console.log('----t2', new Date().getTime());
     } catch (e) {
       resolve();
     }

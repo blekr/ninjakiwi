@@ -3,7 +3,7 @@
 function createOverlap() {
   const url = encodeURIComponent(window.location.href);
   const overlap = document.createElement('iframe');
-  overlap.id = 'ubala-root';
+  overlap.id = 'abala-root';
   overlap.style.position = 'fixed';
   overlap.style.left = '0';
   overlap.style.top = '0';
@@ -18,7 +18,7 @@ function createOverlap() {
   return overlap;
 }
 
-const oldElement = document.querySelector('iframe#ubala-root');
+const oldElement = document.querySelector('iframe#abala-root');
 if (oldElement) {
   oldElement.contentWindow.postMessage('WIN_EV_FORWARD', '*');
 } else {

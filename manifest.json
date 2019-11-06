@@ -1,6 +1,6 @@
 {
-  "name": "CHANGE THIS : Extension boilerplate",
-  "version": "0.0.1",
+  "name": "Abala",
+  "version": "1.0.0",
   "manifest_version": 2,
   "description": "This extension was created with the awesome extensionizr.com",
   "homepage_url": "http://extensionizr.com",
@@ -19,13 +19,13 @@
         "default": "Ctrl+E",
         "mac": "Command+E"
       },
-      "description": "Open Ubala"
+      "description": "Open Abala"
     },
     "toggleDialog2": {
       "suggested_key": {
         "default": "Ctrl+Shift+1"
       },
-      "description": "Open Ubala",
+      "description": "Open Abala",
       "global": true
     }
   },

@@ -43,7 +43,7 @@ function render({
             onChange={e => onChangeText(e.target.value)}
             ref={inputRef}
           />
-          <div className={styles.logo}>Ubala</div>
+          <div className={styles.logo}>Abala</div>
         </div>
         <div className={styles.tabs}>
           {pages.map((page, imgIndex) => (
