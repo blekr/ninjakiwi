@@ -27,13 +27,21 @@
         padding: 0 10px;
       }
 
-      .logo {
-        width: 90px;
+
+      .logoContainer {
         display: flex;
         justify-content: center;
         align-items: center;
-        color: #8B8B8B;
-        font-weight: bold;
+        padding: 0 10px;
+        .logo {
+          width: auto;
+          height: 25px;
+          margin-right: 10px;
+        }
+        .name {
+          color: #8B8B8B;
+          font-weight: bold;
+        }
       }
     }
 
