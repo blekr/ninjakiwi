@@ -1,5 +1,5 @@
 {
-  "name": "Abala",
+  "name": "Kiwi",
   "version": "1.0.0",
   "manifest_version": 2,
   "description": "This extension was created with the awesome extensionizr.com",
@@ -19,13 +19,13 @@
         "default": "Ctrl+E",
         "mac": "Command+E"
       },
-      "description": "Open Abala"
+      "description": "Open Kiwi"
     },
     "toggleDialog2": {
       "suggested_key": {
         "default": "Ctrl+Shift+1"
       },
-      "description": "Open Abala",
+      "description": "Open Kiwi",
       "global": true
     }
   },

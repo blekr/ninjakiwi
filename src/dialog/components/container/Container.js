@@ -17,7 +17,7 @@ import { search } from '../../actions/search';
 import { setIndex } from '../../actions/manipulate';
 import { goto } from '../../actions/opener';
 import { setText } from '../../actions/input';
-import logo from '../../../../assets/abala.png';
+import logo from '../../../../assets/kiwi.png';
 
 function render({
   text,
@@ -47,8 +47,8 @@ function render({
             ref={inputRef}
           />
           <div className={styles.logoContainer}>
-            <img className={styles.logo} src={logo} alt="abala" />
-            <div className={styles.name}>Abala</div>
+            <img className={styles.logo} src={logo} alt="kiwi logo" />
+            <div className={styles.name}>Kiwi</div>
           </div>
         </div>
         <div className={styles.tabs}>
