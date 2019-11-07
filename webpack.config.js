@@ -8,7 +8,7 @@ module.exports = {
   entry: {
     background: ['babel-polyfill', './src/bg/background.js'],
     content: ['babel-polyfill', './src/inject/inject.js'],
-    dialog: ['babel-polyfill', './src/dialog/dialog.js'],
+    dialog: ['./src/dialog/dialog.js'],
     open: ['./src/inject/open.js'],
     hotReload: './src/bg/hotReload.js'
   },

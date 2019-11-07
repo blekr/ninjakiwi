@@ -1,3 +1,4 @@
+import 'regenerator-runtime'
 import { applyMiddleware, createStore } from 'redux';
 import React from 'react';
 import { Provider } from 'react-redux';

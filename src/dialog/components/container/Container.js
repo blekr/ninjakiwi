@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-autofocus */
 import React from 'react';
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
@@ -39,6 +40,7 @@ function render({
       >
         <div className={styles.inputContainer}>
           <input
+            autoFocus
             value={text}
             onChange={e => onChangeText(e.target.value)}
             ref={inputRef}
@@ -99,10 +101,5 @@ export const Container = compose(
         debounceSearch(text);
       }
     };
-  }),
-  lifecycle({
-    componentDidMount() {
-      this.props.inputRef.current.focus();
-    }
   })
 )(render);
