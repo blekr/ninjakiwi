@@ -32,8 +32,7 @@
   "options_page": "options.html",
   "browser_action": {
     "default_icon": "assets/icon19.png",
-    "default_title": "browser action demo",
-    "default_popup": "src/browser_action/browser_action.html"
+    "default_title": "Easy tabs navigation"
   },
   "permissions": ["bookmarks", "history", "tabs", "activeTab", "<all_urls>"],
   "content_scripts": [

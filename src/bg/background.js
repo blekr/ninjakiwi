@@ -117,10 +117,7 @@ chrome.tabs.onActivated.addListener(async ({ tabId, windowId }) => {
   database.updatePhoto(id, png);
 });
 
-chrome.commands.onCommand.addListener(async command => {
-  if (command !== 'toggleDialog1' && command !== 'toggleDialog2') {
-    return;
-  }
+async function toggle() {
   const currentTab = await getCurrentTab();
   if (currentTab.url.indexOf(DIALOG_URL) === 0) {
     await backgroundCom.callContent('EXT_EV_FORWARD', {}, currentTab.id);
@@ -140,6 +137,16 @@ chrome.commands.onCommand.addListener(async command => {
       currentTab.url
     )}`
   );
+}
+
+chrome.commands.onCommand.addListener(async command => {
+  if (command === 'toggleDialog1' || command === 'toggleDialog2') {
+    await toggle();
+  }
+});
+
+chrome.browserAction.onClicked.addListener(async () => {
+  await toggle();
 });
 
 async function loadAllTabs() {
