@@ -5,6 +5,10 @@
   align-items: center;
   cursor: pointer;
 
+  &:hover {
+    background-color: #014710;
+  }
+
   &.active {
     background-color: #014710;
   }

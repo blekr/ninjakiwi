@@ -24,7 +24,6 @@ function render({
   manipulate: { index },
   inputRef,
   closerRef,
-  setIndex,
   hasBgImg,
   openUrl,
   onClick,
@@ -58,7 +57,6 @@ function render({
               key={page.id}
               active={imgIndex === index}
               cls={imgIndex !== size(pages) - 1 && styles.tab}
-              onEnter={() => setIndex(imgIndex)}
               onSelect={() => openUrl(page.url)}
             />
           ))}
