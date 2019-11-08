@@ -5,17 +5,15 @@ import get from 'lodash/get';
 import size from 'lodash/size';
 import {
   compose,
-  lifecycle,
   withHandlers,
   withProps,
-  withState
 } from 'recompose';
 import { connect } from 'react-redux';
 import styles from './Container.scss';
 import { Tab } from '../tab/Tab';
 import { search } from '../../actions/search';
 import { setIndex } from '../../actions/manipulate';
-import { goto } from '../../actions/opener';
+import { cancel, goto } from '../../actions/opener';
 import { setText } from '../../actions/input';
 import logo from '../../../../assets/kiwi.png';
 
@@ -25,12 +23,14 @@ function render({
   onChangeText,
   manipulate: { index },
   inputRef,
+  closerRef,
   setIndex,
   hasBgImg,
-  openUrl
+  openUrl,
+  onClick,
 }) {
   return (
-    <div className={styles.root}>
+    <div className={styles.root} ref={closerRef} onClick={onClick}>
       <div
         className={styles.bg}
         style={{
@@ -88,11 +88,15 @@ export const Container = compose(
       },
       setText(text) {
         dispatch(setText(text));
+      },
+      cancel() {
+        dispatch(cancel());
       }
     })
   ),
   withProps({
-    inputRef: React.createRef()
+    inputRef: React.createRef(),
+    closerRef: React.createRef()
   }),
   withHandlers(({ search }) => {
     const debounceSearch = debounce(text => search(text), 10);
@@ -103,6 +107,11 @@ export const Container = compose(
       onChangeText: ({ setText }) => text => {
         setText(text);
         debounceSearch(text);
+      },
+      onClick: ({ closerRef, cancel }) => e => {
+        if (e.target === closerRef.current) {
+          cancel();
+        }
       }
     };
   })
