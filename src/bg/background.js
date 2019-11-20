@@ -35,8 +35,10 @@ function addPage({ url, favicon, title, lastVisit, visitCount }) {
     title
   });
   database.setLastVisit(id, lastVisit);
-  database.addUrlVisitCount(id, visitCount);
-  database.addHostVisitCount(hostId, visitCount);
+  if (visitCount) {
+    database.addUrlVisitCount(id, visitCount);
+    database.addHostVisitCount(hostId, visitCount);
+  }
 }
 
 backgroundCom.handle('SEARCH', ({ text, excludeUrl }) =>
@@ -75,7 +77,7 @@ backgroundCom.handle('ACTIVATE_TAB', async ({ tabId }) => {
 
 chrome.tabs.onUpdated.addListener(async (tabId, { status }, tab) => {
   console.log('on updated: ', tab.url, status);
-  if (!tab.url || status !== 'complete') {
+  if (!tab.url) {
     return;
   }
   addPage({
@@ -83,8 +85,12 @@ chrome.tabs.onUpdated.addListener(async (tabId, { status }, tab) => {
     favicon: tab.favIconUrl || defaultFavicon,
     title: tab.title,
     lastVisit: new Date().getTime(),
-    visitCount: 1
+    visitCount: status === 'complete' ? 1 : 0
   });
+
+  if (status !== 'complete') {
+    return;
+  }
   const id = urlToId(tab.url);
   if (!database.exists(id)) {
     return;
