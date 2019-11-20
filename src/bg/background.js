@@ -12,6 +12,7 @@ import {
   getScreenshot,
   getTabById,
   getTabByUrl,
+  isSameHost,
   isSensitive,
   removeTab,
   updateTab,
@@ -22,7 +23,7 @@ import {
 const DIALOG_URL = chrome.runtime.getURL('dialog.html');
 const IGNORE_LIST = ['chrome://newtab/', DIALOG_URL];
 
-function addPage({ url, favicon, title, lastVisit, visitCount }) {
+function addPage({ url, favicon, title, lastTabId, lastVisit, visitCount }) {
   if (IGNORE_LIST.filter(item => url.indexOf(item) >= 0).length > 0) {
     return;
   }
@@ -32,7 +33,8 @@ function addPage({ url, favicon, title, lastVisit, visitCount }) {
     id,
     url,
     favicon,
-    title
+    title,
+    lastTabId
   });
   database.setLastVisit(id, lastVisit);
   if (visitCount) {
@@ -45,19 +47,31 @@ backgroundCom.handle('SEARCH', ({ text, excludeUrl }) =>
   database.search(text, excludeUrl)
 );
 backgroundCom.handle('OPEN_URL', async ({ url }) => {
-  const tab = await getTabByUrl(url);
-  if (tab) {
-    await updateTab(tab.id, { active: true });
-    await updateWindow(tab.windowId, { focused: true });
+  const id = urlToId(url);
+  let tab = await getTabByUrl(url);
+  let updateUrl = false;
+  if (!tab) {
+    const { lastTabId } = database.pages[id];
+    if (lastTabId) {
+      const possibleTab = await getTabById(lastTabId);
+      if (possibleTab && isSameHost(url, possibleTab.url)) {
+        tab = possibleTab;
+        updateUrl = true;
+      }
+    }
+  }
 
-    const id = urlToId(url);
-    const hostId = urlToId(getHostname(url));
-    database.setLastVisit(id, new Date().getTime());
-    database.addUrlVisitCount(id, 1);
-    database.addHostVisitCount(hostId, 1);
+  if (tab) {
+    await updateTab(tab.id, { active: true, url: updateUrl ? url : undefined });
+    await updateWindow(tab.windowId, { focused: true });
   } else {
     chrome.tabs.create({ url, active: true });
   }
+
+  const hostId = urlToId(getHostname(url));
+  database.setLastVisit(id, new Date().getTime());
+  database.addUrlVisitCount(id, 1);
+  database.addHostVisitCount(hostId, 1);
 });
 
 // for current tab
@@ -84,6 +98,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, { status }, tab) => {
     url: tab.url,
     favicon: tab.favIconUrl || defaultFavicon,
     title: tab.title,
+    lastTabId: tabId,
     lastVisit: new Date().getTime(),
     visitCount: status === 'complete' ? 1 : 0
   });
@@ -158,11 +173,12 @@ chrome.browserAction.onClicked.addListener(async () => {
 async function loadAllTabs() {
   const now = new Date().getTime();
   const allTabs = await getAllTabs();
-  allTabs.forEach(({ url, favIconUrl, title }) => {
+  allTabs.forEach(({ id, url, favIconUrl, title }) => {
     addPage({
       url,
       favicon: favIconUrl || defaultFavicon,
       title,
+      lastTabId: id,
       lastVisit: now,
       visitCount: 1
     });

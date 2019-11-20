@@ -20,7 +20,7 @@ export async function getTabByUrl(url) {
       const filtered = filter(tabs, tab => tab.url === url);
       resolve(get(filtered, 0));
     });
-    chrome.tabs.query({ url }, tabs => resolve(get(tabs, 0)));
+    // chrome.tabs.query({ url }, tabs => resolve(get(tabs, 0)));
   });
 }
 
@@ -112,4 +112,10 @@ export function executeScript(details) {
   return new Promise(resolve => {
     chrome.tabs.executeScript(details, resolve);
   });
+}
+
+export function isSameHost(url1, url2) {
+  const host1 = getHostname(url1)
+  const host2 = getHostname(url2)
+  return host1 === host2;
 }

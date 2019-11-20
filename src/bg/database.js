@@ -8,6 +8,7 @@ id
 url
 favicon
 title
+lastTabId
 screenImg
 */
 
