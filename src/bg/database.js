@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import FlexSearch from 'flexsearch';
 import _ from 'lodash';
 import Heap from 'heap';
@@ -21,6 +22,7 @@ const WEIGHTS = {
   title: [33, 30, 28, 5, 5, 5],
   tab: 20,
   recent: [25, 15, 13, 2, 2, 2],
+  host: 15,
   totalUrl: [8, 6, 4, 2, 2, 2],
   totalHost: [6, 4, 2, 1, 1, 1],
   url: [6, 4, 2, 2, 2, 2]
@@ -257,6 +259,29 @@ class Database {
     return map;
   }
 
+  __getHostScore(ids, text) {
+    const items = text.split(' ');
+    const map = {};
+    ids.forEach(id => {
+      const host = getHostname(this.pages[id].url);
+      for (const item of items) {
+        if (host.indexOf(item) >= 0) {
+          map[id] = {
+            score: WEIGHTS.host,
+            meta: {
+              host: {
+                score: WEIGHTS.host,
+                host
+              }
+            }
+          };
+          return;
+        }
+      }
+    });
+    return map;
+  }
+
   __mergeMap(maps) {
     const ret = {};
     // eslint-disable-next-line no-restricted-syntax
@@ -305,12 +330,14 @@ class Database {
     const urlVisitScore = this.__getUrlVisitScore(keys);
     const hostVisitScore = this.__getHostVisitScore(keys);
     const tabScore = await this.__getTabScore(keys);
+    const hostScore = this.__getHostScore(urlMatch, text);
     const merged = this.__mergeMap([
       map,
       lastVisitScore,
       urlVisitScore,
       hostVisitScore,
-      tabScore
+      tabScore,
+      hostScore
     ]);
 
     const entries = Heap.nlargest(

@@ -6,15 +6,18 @@ export function search(text) {
     const {
       opener: { url }
     } = getState();
-    let colored;
-    const pages = await contentCom.callBackground('SEARCH', {
-      text,
-      excludeUrl: url
-    });
+
     const refinedText = text
       .replace(/^ */, '')
       .replace(/ *$/, '')
       .replace(/ +/g, ' ');
+
+    const pages = await contentCom.callBackground('SEARCH', {
+      text: refinedText,
+      excludeUrl: url
+    });
+
+    let colored;
     if (refinedText) {
       const keywords = refinedText.split(' ');
       colored = pages.map(page => ({
