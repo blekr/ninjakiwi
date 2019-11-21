@@ -111,7 +111,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, { status }, tab) => {
     return;
   }
 
-  if (!database.hasPhoto(id) && !isSensitive(tab.url)) {
+  if (!isSensitive(tab.url)) {
     const png = await getScreenshot(tab.windowId);
     database.updatePhoto(id, png);
   }
@@ -131,7 +131,7 @@ chrome.tabs.onActivated.addListener(async ({ tabId, windowId }) => {
   }
   database.setLastVisit(id, new Date().getTime());
 
-  if (isSensitive(tab.url) || database.hasPhoto(id)) {
+  if (isSensitive(tab.url)) {
     return;
   }
   const png = await getScreenshot(windowId);
