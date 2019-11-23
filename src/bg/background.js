@@ -10,6 +10,7 @@ import {
   getCurrentTab,
   getHostname,
   getScreenshot,
+  getTabByHost,
   getTabById,
   getTabByUrl,
   isSameHost,
@@ -19,9 +20,11 @@ import {
   updateWindow,
   urlToId
 } from './tools';
+import { SelfTabTracker } from './selfTabTracker';
 
 const DIALOG_URL = chrome.runtime.getURL('dialog.html');
 const IGNORE_LIST = ['chrome://newtab/', DIALOG_URL];
+const selfTabTracker = new SelfTabTracker();
 
 function addPage({ url, favicon, title, lastTabId, lastVisit, visitCount }) {
   if (IGNORE_LIST.filter(item => url.indexOf(item) >= 0).length > 0) {
@@ -51,14 +54,11 @@ backgroundCom.handle('OPEN_URL', async ({ url }) => {
   let tab = await getTabByUrl(url);
   let updateUrl = false;
   if (!tab) {
-    const { lastTabId } = database.pages[id];
-    if (lastTabId) {
-      const possibleTab = await getTabById(lastTabId);
-      if (possibleTab && isSameHost(url, possibleTab.url)) {
-        tab = possibleTab;
-        updateUrl = true;
-      }
-    }
+    console.log('------is self tab', await selfTabTracker.isSelfTab(url), url);
+  }
+  if (!tab && (await selfTabTracker.isSelfTab(url))) {
+    tab = await getTabByHost(getHostname(url));
+    updateUrl = true;
   }
 
   if (tab) {
@@ -231,6 +231,7 @@ async function run() {
   await loadAllTabs();
   await loadAllBookmarks();
   await loadAllHistory();
+  await selfTabTracker.init();
   database.buildRecent();
 }
 

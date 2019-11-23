@@ -34,7 +34,14 @@
     "default_icon": "assets/icon19.png",
     "default_title": "Easy tabs navigation"
   },
-  "permissions": ["bookmarks", "history", "tabs", "activeTab", "<all_urls>"],
+  "permissions": [
+    "bookmarks",
+    "history",
+    "tabs",
+    "activeTab",
+    "<all_urls>",
+    "storage"
+  ],
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
