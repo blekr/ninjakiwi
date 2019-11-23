@@ -42,7 +42,6 @@ function getClass(total, index, visible, imgIndex) {
 }
 
 function getOffset(visible) {
-  console.log('----offset', visible.start * 160);
   return visible.start * 160;
 }
 

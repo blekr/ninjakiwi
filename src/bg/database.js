@@ -28,7 +28,7 @@ const WEIGHTS = {
   url: [6, 4, 2, 2, 2, 2]
 };
 
-class Database {
+export class Database {
   constructor() {
     this.pages = {};
     this.titleIndex = FlexSearch.create({
@@ -57,7 +57,7 @@ class Database {
       url = normalize(page.url);
     }
     if (!title || !url) {
-      return;
+      return false;
     }
     if (this.pages[page.id]) {
       this.pages[page.id] = { ...this.pages[page.id], ...page };
@@ -68,6 +68,7 @@ class Database {
       this.titleIndex.add(page.id, title);
       this.urlIndex.add(page.id, url);
     }
+    return true;
   }
 
   exists(id) {
@@ -88,15 +89,16 @@ class Database {
   }
 
   setLastVisit(id, time) {
-    if (this.lastVisit[id]) {
-      if (time > this.lastVisit[id]) {
-        this.lastVisit[id] = time;
-      }
-    } else {
+    if (!this.lastVisit[id] || time > this.lastVisit[id]) {
       this.lastVisit[id] = time;
     }
+
     if (!_.size(this.recents) || time > this.recents[0].time) {
-      const filtered = _.filter(this.recents, recent => recent.id !== id);
+      const host = getHostname(this.pages[id].url)
+      const filtered = _.filter(this.recents, recent => {
+        const currentHost = getHostname(this.pages[recent.id].url)
+        return currentHost !== host;
+      });
       filtered.splice(0, 0, { id, time });
       this.recents = filtered.slice(0, RECENT_SIZE);
     }
@@ -302,12 +304,24 @@ class Database {
   }
 
   buildRecent() {
+    const hosts = {};
+    Object.entries(this.lastVisit).forEach(([id, time]) => {
+      const page = this.pages[id];
+      const host = getHostname(page.url);
+      if (!hosts[host] || time > hosts[host].time) {
+        hosts[host] = {
+          id: page.id,
+          url: page.url,
+          time
+        };
+      }
+    });
     const entries = Heap.nlargest(
-      _.toPairs(this.lastVisit),
+      Object.values(hosts),
       RECENT_SIZE,
-      (a, b) => a[1] - b[1]
+      (a, b) => a.time - b.time
     );
-    this.recents = entries.map(entry => ({ id: entry[0], time: entry[1] }));
+    this.recents = entries.map(entry => ({ id: entry.id, time: entry.time }));
   }
 
   async search(text, excludeUrl) {
@@ -349,7 +363,3 @@ class Database {
     return entries.map(([id]) => this.pages[id]);
   }
 }
-
-export const database = new Database();
-
-chrome.database = database;

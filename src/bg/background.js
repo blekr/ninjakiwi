@@ -1,6 +1,6 @@
 import size from 'lodash/size';
 import { backgroundCom } from '../communication/background';
-import { database } from './database';
+import { Database } from './database';
 import {
   createTab,
   defaultFavicon,
@@ -25,6 +25,7 @@ import { SelfTabTracker } from './selfTabTracker';
 const DIALOG_URL = chrome.runtime.getURL('dialog.html');
 const IGNORE_LIST = ['chrome://newtab/', DIALOG_URL];
 const selfTabTracker = new SelfTabTracker();
+const database = new Database();
 
 function addPage({ url, favicon, title, lastTabId, lastVisit, visitCount }) {
   if (IGNORE_LIST.filter(item => url.indexOf(item) >= 0).length > 0) {
@@ -32,13 +33,17 @@ function addPage({ url, favicon, title, lastTabId, lastVisit, visitCount }) {
   }
   const id = urlToId(url);
   const hostId = urlToId(getHostname(url));
-  database.addPage({
+  const added = database.addPage({
     id,
     url,
     favicon,
     title,
     lastTabId
   });
+
+  if (!added) {
+    return;
+  }
   database.setLastVisit(id, lastVisit);
   if (visitCount) {
     database.addUrlVisitCount(id, visitCount);
@@ -53,9 +58,6 @@ backgroundCom.handle('OPEN_URL', async ({ url }) => {
   const id = urlToId(url);
   let tab = await getTabByUrl(url);
   let updateUrl = false;
-  if (!tab) {
-    console.log('------is self tab', await selfTabTracker.isSelfTab(url), url);
-  }
   if (!tab && (await selfTabTracker.isSelfTab(url))) {
     tab = await getTabByHost(getHostname(url));
     updateUrl = true;

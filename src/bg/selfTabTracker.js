@@ -25,10 +25,8 @@ export class SelfTabTracker {
     const urlId = urlToId(url);
     if (!this.tabs[id]) {
       chrome.storage.sync.remove(urlId);
-      console.log('------remove', url);
     } else if (isSameHost(this.tabs[id], url)) {
       chrome.storage.sync.set({ [urlId]: true });
-      console.log('------set', url);
     }
     this.tabs[id] = url;
   }

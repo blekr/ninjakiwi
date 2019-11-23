@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "webpack --watch --mode=development",
     "build": "webpack"
   },
@@ -29,15 +29,18 @@
   },
   "dependencies": {
     "@babel/preset-react": "^7.0.0",
+    "babel-jest": "^24.9.0",
     "babel-polyfill": "^6.26.0",
     "css-loader": "^3.2.0",
     "eslint": "^6.1.0",
+    "eslint-plugin-jest": "^23.0.4",
     "eslint-plugin-prettier": "^3.1.0",
     "event-emitter": "^0.3.5",
     "file-loader": "^4.2.0",
     "flexsearch": "^0.6.30",
     "heap": "^0.2.6",
     "html2canvas": "^1.0.0-rc.3",
+    "jest": "^24.9.0",
     "lodash": "^4.17.15",
     "md5": "^2.2.1",
     "node-sass": "^4.12.0",
