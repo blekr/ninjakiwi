@@ -1,4 +1,5 @@
 import { getAllTabs, isSameHost, urlToId } from './tools';
+import { PREFIX } from '../constants';
 
 export class SelfTabTracker {
   constructor() {
@@ -22,19 +23,21 @@ export class SelfTabTracker {
     if (!url) {
       return;
     }
-    const urlId = urlToId(url);
+    const storageKey = `${PREFIX.SELF_TAB}.${urlToId(url)}`;
     if (!this.tabs[id]) {
-      chrome.storage.sync.remove(urlId);
+      chrome.storage.sync.remove(storageKey);
     } else if (isSameHost(this.tabs[id], url)) {
-      chrome.storage.sync.set({ [urlId]: true });
+      chrome.storage.sync.set({ [storageKey]: true });
     }
     this.tabs[id] = url;
   }
 
   async isSelfTab(url) {
     return new Promise(resolve => {
-      const id = urlToId(url);
-      chrome.storage.sync.get(id, results => resolve(!!results[id]));
+      const storageKey = `${PREFIX.SELF_TAB}.${urlToId(url)}`;
+      chrome.storage.sync.get(storageKey, results => {
+        return resolve(!!results[storageKey]);
+      });
     });
   }
 }
