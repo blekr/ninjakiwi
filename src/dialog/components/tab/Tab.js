@@ -6,6 +6,7 @@ export function Tab({
   favicon,
   coloredTitle,
   coloredUrl,
+  newTab,
   labels = [],
   active,
   cls,
@@ -21,23 +22,33 @@ export function Tab({
     >
       <img className={styles.img} alt="" src={favicon} />
       <div className={styles.right}>
-        <div className={styles.labelTitle}>
-          <div className={styles.labels}>
-            {labels.map(({ color, text }) => (
-              <div style={{ backgroundColor: color }} className={styles.label}>
-                {text}
-              </div>
-            ))}
+        <div className={styles.left}>
+          <div className={styles.labelTitle}>
+            <div className={styles.labels}>
+              {labels.map(({ color, text }) => (
+                <div
+                  style={{ backgroundColor: color }}
+                  className={styles.label}
+                >
+                  {text}
+                </div>
+              ))}
+            </div>
+            <div
+              className={styles.title}
+              dangerouslySetInnerHTML={{ __html: coloredTitle }}
+            />
           </div>
           <div
-            className={styles.title}
-            dangerouslySetInnerHTML={{ __html: coloredTitle }}
+            className={styles.url}
+            dangerouslySetInnerHTML={{ __html: coloredUrl }}
           />
         </div>
-        <div
-          className={styles.url}
-          dangerouslySetInnerHTML={{ __html: coloredUrl }}
-        />
+        {newTab && (
+          <div className={styles.icons}>
+            <img src="../../../../assets/newTab.png" alt="open new tab" />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -13,7 +13,6 @@ import {
   getTabByHost,
   getTabById,
   getTabByUrl,
-  isSameHost,
   isSensitive,
   removeTab,
   updateTab,
@@ -51,21 +50,41 @@ function addPage({ url, favicon, title, lastTabId, lastVisit, visitCount }) {
   }
 }
 
-backgroundCom.handle('SEARCH', ({ text, excludeUrl }) =>
-  database.search(text, excludeUrl)
-);
-backgroundCom.handle('OPEN_URL', async ({ url }) => {
-  const id = urlToId(url);
+async function getOpenStyle(url) {
   let tab = await getTabByUrl(url);
   let updateUrl = false;
   if (!tab && (await selfTabTracker.isSelfTab(url))) {
     tab = await getTabByHost(getHostname(url));
     updateUrl = true;
   }
+  return {
+    tab,
+    updateUrl
+  };
+}
 
-  if (tab) {
-    await updateTab(tab.id, { active: true, url: updateUrl ? url : undefined });
-    await updateWindow(tab.windowId, { focused: true });
+async function addOpenInNewTab(page) {
+  const openStyle = await getOpenStyle(page.url);
+  return {
+    ...page,
+    newTab: !openStyle.tab
+  };
+}
+
+backgroundCom.handle('SEARCH', async ({ text, excludeUrl }) => {
+  const pages = await database.search(text, excludeUrl);
+  return Promise.all(pages.map(addOpenInNewTab));
+});
+backgroundCom.handle('OPEN_URL', async ({ url }) => {
+  const id = urlToId(url);
+  const openStyle = await getOpenStyle(url);
+
+  if (openStyle.tab) {
+    await updateTab(openStyle.tab.id, {
+      active: true,
+      url: openStyle.updateUrl ? url : undefined
+    });
+    await updateWindow(openStyle.tab.windowId, { focused: true });
   } else {
     chrome.tabs.create({ url, active: true });
   }

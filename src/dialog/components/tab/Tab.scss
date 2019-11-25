@@ -24,38 +24,59 @@
   .right {
     flex: 1 1 auto;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     overflow: hidden;
 
-    .labelTitle {
+    .left {
+      flex: 1 1 auto;
       display: flex;
+      flex-direction: column;
+      overflow: hidden;
 
-      .labels {
+      .labelTitle {
         display: flex;
 
-        .label {
-          color: white;
+        .labels {
+          display: flex;
+
+          .label {
+            color: white;
+          }
+        }
+
+        .title {
+          font-size: 18px;
+          font-weight: bold;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          color: #E6E6E6;
         }
       }
 
-      .title {
-        font-size: 18px;
-        font-weight: bold;
+      .url {
+        color: #2266C6;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        color: #E6E6E6;
+        text-align: left;
+        margin-top: 2px;
+        font-size: 14px;
       }
     }
 
-    .url {
-      color: #2266C6;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      text-align: left;
-      margin-top: 2px;
-      font-size: 14px;
+    .icons {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+
+      img {
+        width: 24px;
+        height: 24px;
+        color: #614e1a;
+      }
     }
   }
 }
