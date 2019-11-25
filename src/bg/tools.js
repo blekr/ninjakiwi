@@ -43,11 +43,13 @@ export async function getAllWindows() {
 
 export async function getScreenshot(windowId) {
   return new Promise(resolve => {
-    try {
-      chrome.tabs.captureVisibleTab(windowId, {}, resolve);
-    } catch (e) {
-      resolve();
-    }
+    chrome.tabs.captureVisibleTab(windowId, {}, dataUrl => {
+      if (chrome.runtime.lastError) {
+        resolve();
+      } else {
+        resolve(dataUrl);
+      }
+    });
   });
 }
 

@@ -83,7 +83,7 @@ export class Database {
   }
 
   updatePhoto(id, photo) {
-    if (this.pages[id]) {
+    if (photo && this.pages[id]) {
       this.pages[id].screenImg = photo;
     }
   }
@@ -94,9 +94,9 @@ export class Database {
     }
 
     if (!_.size(this.recents) || time > this.recents[0].time) {
-      const host = getHostname(this.pages[id].url)
+      const host = getHostname(this.pages[id].url);
       const filtered = _.filter(this.recents, recent => {
-        const currentHost = getHostname(this.pages[recent.id].url)
+        const currentHost = getHostname(this.pages[recent.id].url);
         return currentHost !== host;
       });
       filtered.splice(0, 0, { id, time });
