@@ -1,5 +1,6 @@
 {
   "name": "Kiwi",
+  "short_name": "Kiwi",
   "version": "1.0.0",
   "manifest_version": 2,
   "description": "Search, navigate and manage tabs in an effective way",
