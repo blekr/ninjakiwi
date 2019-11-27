@@ -2,8 +2,7 @@
   "name": "Kiwi",
   "version": "1.0.0",
   "manifest_version": 2,
-  "description": "This extension was created with the awesome extensionizr.com",
-  "homepage_url": "http://extensionizr.com",
+  "description": "Search, navigate and manage tabs in an effective way",
   "icons": {
     "16": "assets/icon16.png",
     "48": "assets/icon48.png",
@@ -29,10 +28,9 @@
       "global": true
     }
   },
-  "options_page": "options.html",
   "browser_action": {
     "default_icon": "assets/icon19.png",
-    "default_title": "Easy tabs navigation"
+    "default_title": "Search, navigate and manage tabs in an effective way"
   },
   "permissions": [
     "bookmarks",
