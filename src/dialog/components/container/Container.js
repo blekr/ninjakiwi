@@ -3,11 +3,7 @@ import React from 'react';
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
 import size from 'lodash/size';
-import {
-  compose,
-  withHandlers,
-  withProps,
-} from 'recompose';
+import { compose, withHandlers, withProps } from 'recompose';
 import { connect } from 'react-redux';
 import styles from './Container.scss';
 import { Tab } from '../tab/Tab';
@@ -26,7 +22,7 @@ function render({
   closerRef,
   hasBgImg,
   openUrl,
-  onClick,
+  onClick
 }) {
   return (
     <div className={styles.root} ref={closerRef} onClick={onClick}>
@@ -47,7 +43,7 @@ function render({
           />
           <div className={styles.logoContainer}>
             <img className={styles.logo} src={logo} alt="kiwi logo" />
-            <div className={styles.name}>Kiwi</div>
+            <div className={styles.name}>Ninja Kiwi</div>
           </div>
         </div>
         <div className={styles.tabs}>
