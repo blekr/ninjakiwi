@@ -1,6 +1,6 @@
 {
-  "name": "Kiwi",
-  "short_name": "Kiwi",
+  "name": "Ninja Kiwi",
+  "short_name": "Ninja Kiwi",
   "version": "1.0.0",
   "manifest_version": 2,
   "description": "Search, navigate and manage tabs in an effective way",
@@ -19,13 +19,13 @@
         "default": "Ctrl+E",
         "mac": "Command+E"
       },
-      "description": "Open Kiwi"
+      "description": "Open Ninja Kiwi"
     },
     "toggleDialog2": {
       "suggested_key": {
         "default": "Ctrl+Shift+1"
       },
-      "description": "Open Kiwi",
+      "description": "Open Ninja Kiwi",
       "global": true
     }
   },
