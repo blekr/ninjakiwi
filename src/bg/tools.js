@@ -119,7 +119,13 @@ export function createTab(url) {
 
 export function executeScript(details) {
   return new Promise(resolve => {
-    chrome.tabs.executeScript(details, resolve);
+    chrome.tabs.executeScript(details, results => {
+      if (chrome.runtime.lastError) {
+        resolve(null);
+      } else {
+        resolve(results);
+      }
+    });
   });
 }
 
