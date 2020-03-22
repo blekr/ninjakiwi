@@ -1,3 +1,5 @@
+https://chrome.google.com/webstore/detail/ddjmhgbmcnlckfekncgcolpnmllcfkkf/publish-accepted?authuser=2&hl=en
+
 Search, navigate and manage tabs in an effective way
 Ninja Kiwi makes it faster and easier for you to search and navigate between tabs. You can search for the pages that are in the current opened tabs, as well as pages in the whole visiting history and bookmarks. It improves your work efficiency and, more importantly, makes you enjoy working with browser. Never get tons of opened tabs dazzling your eyes and can not find the one you want again.
 
